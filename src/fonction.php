@@ -585,5 +585,257 @@ function getUserById(int $id): ?array
 	return fetchOneRow($sql, [':id' => $id]);
 }
 
+// ============================================================
+// AUTHENTICATION FUNCTIONS
+// ============================================================
+
+function getUserByUsername(string $username): ?array
+{
+	$sql = "
+		SELECT id, username, email, password_hash, role, created_at
+		FROM users
+		WHERE username = :username
+	";
+
+	return fetchOneRow($sql, [':username' => $username]);
+}
+
+function validateLogin(string $username, string $password): ?array
+{
+	$user = getUserByUsername($username);
+
+	if ($user === null) {
+		return null;
+	}
+
+	// Simple password validation (in production, use password_verify with bcrypt)
+	if ($user['password_hash'] === $password) {
+		unset($user['password_hash']);
+		return $user;
+	}
+
+	return null;
+}
+
+// ============================================================
+// ARTICLE MANAGEMENT FUNCTIONS (CRUD)
+// ============================================================
+
+function getAllArticles(int $limit = 50, int $offset = 0): array
+{
+	$limit = max(1, $limit);
+	$offset = max(0, $offset);
+
+	$sql = "
+		SELECT
+			a.id,
+			a.user_id,
+			a.category_id,
+			a.title,
+			a.slug,
+			a.content,
+			a.meta_title,
+			a.meta_description,
+			a.status,
+			a.published_at,
+			a.created_at,
+			a.updated_at,
+			u.username AS author_username,
+			c.name AS category_name
+		FROM articles a
+		INNER JOIN users u ON u.id = a.user_id
+		LEFT JOIN categories c ON c.id = a.category_id
+		ORDER BY a.created_at DESC
+		LIMIT :limit OFFSET :offset
+	";
+
+	$stmt = pdoConnection()->prepare($sql);
+	$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+	$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+	$stmt->execute();
+
+	return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function getArticlesByStatus(string $status, int $limit = 50, int $offset = 0): array
+{
+	$limit = max(1, $limit);
+	$offset = max(0, $offset);
+	$validStatuses = ['draft', 'published', 'archived'];
+
+	if (!in_array($status, $validStatuses)) {
+		return [];
+	}
+
+	$sql = "
+		SELECT
+			a.id,
+			a.user_id,
+			a.category_id,
+			a.title,
+			a.slug,
+			a.content,
+			a.meta_title,
+			a.meta_description,
+			a.status,
+			a.published_at,
+			a.created_at,
+			a.updated_at,
+			u.username AS author_username,
+			c.name AS category_name
+		FROM articles a
+		INNER JOIN users u ON u.id = a.user_id
+		LEFT JOIN categories c ON c.id = a.category_id
+		WHERE a.status = :status
+		ORDER BY a.created_at DESC
+		LIMIT :limit OFFSET :offset
+	";
+
+	$stmt = pdoConnection()->prepare($sql);
+	$stmt->bindValue(':status', $status, PDO::PARAM_STR);
+	$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+	$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+	$stmt->execute();
+
+	return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function countAllArticles(): int
+{
+	$sql = "SELECT COUNT(*)::INT AS total FROM articles";
+	$row = fetchOneRow($sql);
+	return (int) ($row['total'] ?? 0);
+}
+
+function countArticlesByStatus(string $status): int
+{
+	$validStatuses = ['draft', 'published', 'archived'];
+
+	if (!in_array($status, $validStatuses)) {
+		return 0;
+	}
+
+	$sql = "SELECT COUNT(*)::INT AS total FROM articles WHERE status = :status";
+	$row = fetchOneRow($sql, [':status' => $status]);
+	return (int) ($row['total'] ?? 0);
+}
+
+function createArticle(
+	int $userId,
+	?int $categoryId,
+	string $title,
+	string $slug,
+	string $content,
+	?string $metaTitle = null,
+	?string $metaDescription = null,
+	string $status = 'draft',
+	?string $publishedAt = null
+): ?array
+{
+	$sql = "
+		INSERT INTO articles (user_id, category_id, title, slug, content, meta_title, meta_description, status, published_at)
+		VALUES (:user_id, :category_id, :title, :slug, :content, :meta_title, :meta_description, :status, :published_at)
+		RETURNING id, user_id, category_id, title, slug, content, meta_title, meta_description, status, published_at, created_at, updated_at
+	";
+
+	$stmt = pdoConnection()->prepare($sql);
+	$stmt->execute([
+		':user_id' => $userId,
+		':category_id' => $categoryId,
+		':title' => $title,
+		':slug' => $slug,
+		':content' => $content,
+		':meta_title' => $metaTitle,
+		':meta_description' => $metaDescription,
+		':status' => $status,
+		':published_at' => $publishedAt
+	]);
+
+	return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}
+
+function updateArticle(
+	int $articleId,
+	?int $categoryId,
+	string $title,
+	string $slug,
+	string $content,
+	?string $metaTitle = null,
+	?string $metaDescription = null,
+	string $status = 'draft',
+	?string $publishedAt = null
+): bool
+{
+	$sql = "
+		UPDATE articles
+		SET category_id = :category_id,
+			title = :title,
+			slug = :slug,
+			content = :content,
+			meta_title = :meta_title,
+			meta_description = :meta_description,
+			status = :status,
+			published_at = :published_at,
+			updated_at = NOW()
+		WHERE id = :id
+	";
+
+	$stmt = pdoConnection()->prepare($sql);
+	return $stmt->execute([
+		':id' => $articleId,
+		':category_id' => $categoryId,
+		':title' => $title,
+		':slug' => $slug,
+		':content' => $content,
+		':meta_title' => $metaTitle,
+		':meta_description' => $metaDescription,
+		':status' => $status,
+		':published_at' => $publishedAt
+	]);
+}
+
+function deleteArticle(int $articleId): bool
+{
+	$sql = "DELETE FROM articles WHERE id = :id";
+	return executeQuery($sql, [':id' => $articleId]);
+}
+
+function getMediaById(int $mediaId): ?array
+{
+	$sql = "
+		SELECT id, article_id, filename, alt_text, mime_type, file_size, uploaded_at
+		FROM medias
+		WHERE id = :id
+	";
+
+	return fetchOneRow($sql, [':id' => $mediaId]);
+}
+
+function addMediaToArticle(int $articleId, string $filename, string $altText = '', string $mimeType = 'image/jpeg', ?int $fileSize = null): ?array
+{
+	$sql = "
+		INSERT INTO medias (article_id, filename, alt_text, mime_type, file_size)
+		VALUES (:article_id, :filename, :alt_text, :mime_type, :file_size)
+		RETURNING id, article_id, filename, alt_text, mime_type, file_size, uploaded_at
+	";
+
+	$stmt = pdoConnection()->prepare($sql);
+	$stmt->execute([
+		':article_id' => $articleId,
+		':filename' => $filename,
+		':alt_text' => $altText,
+		':mime_type' => $mimeType,
+		':file_size' => $fileSize
+	]);
+
+	return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}
+
+function deleteMedia(int $mediaId): bool
+{
+	$sql = "DELETE FROM medias WHERE id = :id";
+	return executeQuery($sql, [':id' => $mediaId]);
+}
+
 
 ?>

@@ -623,9 +623,9 @@
     <nav aria-label="Navigation principale">
       <a href="index.php" class="active">Accueil</a>
       <?php foreach ($categories as $cat) { ?>
-        <a href="categorie.php?id=<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></a>
+        <a href="/categorie/<?= urlencode($cat['slug']) ?>"><?= htmlspecialchars($cat['name']) ?></a>
       <?php } ?>
-      <a href="a-propos.php">À propos</a>
+      <a href="/a-propos">À propos</a>
     </nav>
   </header>
 
@@ -668,7 +668,7 @@
           <?php foreach (array_slice($sidebarArticles, 1, 4) as $art) { ?>
           <li>
             <div class="art-cat"><?= htmlspecialchars($art['category_name'] ?? 'Article') ?></div>
-            <h3><a href="article.php?slug=<?= urlencode($art['slug']) ?>"><?= htmlspecialchars($art['title']) ?></a></h3>
+            <h3><a href="/article/<?= urlencode($art['slug']) ?>"><?= htmlspecialchars($art['title']) ?></a></h3>
             <div class="art-date"><?= $art['published_at'] ? date('d M Y', strtotime($art['published_at'])) : '' ?></div>
           </li>
           <?php } ?>
@@ -696,7 +696,7 @@
             <?php } ?>
           </div>
           <div class="card-cat"><?= htmlspecialchars($article['category_name'] ?? 'Article') ?></div>
-          <h3><a href="article.php?slug=<?= urlencode($article['slug']) ?>"><?= htmlspecialchars($article['title']) ?></a></h3>
+          <h3><a href="/article/<?= urlencode($article['slug']) ?>"><?= htmlspecialchars($article['title']) ?></a></h3>
           <p class="card-excerpt"><?= htmlspecialchars(substr(strip_tags($article['content']), 0, 120)) ?>...</p>
           <div class="card-meta">
             <span><?= $article['published_at'] ? date('d M Y', strtotime($article['published_at'])) : '' ?></span>
@@ -713,7 +713,7 @@
         <h2>Explorer par thématique</h2>
       <div class="cat-grid">
         <?php foreach ($categories as $cat) { ?>
-            <a href="categorie.php?slug=<?= urlencode($cat['slug']) ?>" class="cat-card">
+            <a href="/categorie/<?= urlencode($cat['slug']) ?>" class="cat-card">
               <span class="cat-icon">🏛</span>
               <h3><?php echo htmlspecialchars($cat['name']); ?></h3>
               <p><?php echo htmlspecialchars($cat['description']); ?></p>
