@@ -1,4 +1,15 @@
-
+<?php
+    include 'fonction.php';
+    $categories = getAllCategories(true);
+    
+    $heroArticle = getLatestPublishedArticle();
+    
+    $latestArticles = getPublishedArticles(3, 0);
+    
+    $sidebarArticles = getPublishedArticles(4, 0);
+    
+    $allArticlesForTicker = getPublishedArticles(10, 0);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -591,8 +602,8 @@
 <body>
 
   <div class="topbar">
-    <span>Dimanche 29 mars 2026</span> &nbsp;·&nbsp;
-    <a href="article.php">Dernière heure : Négociations à Genève — nouvelles propositions sur le nucléaire</a>
+    <span><?= date('l d F Y', strtotime('2026-03-29')) ?></span> &nbsp;·&nbsp;
+    <a href="article.php?slug=<?= urlencode($heroArticle['slug'] ?? 'accueil') ?>">Dernière heure : <?= htmlspecialchars(substr($heroArticle['title'] ?? 'Actualités', 0, 80)) ?></a>
   </div>
 
   <header>
@@ -611,10 +622,9 @@
     </div>
     <nav aria-label="Navigation principale">
       <a href="index.php" class="active">Accueil</a>
-      <a href="categorie.php">Politique</a>
-      <a href="categorie.php">Militaire</a>
-      <a href="categorie.php">Humanitaire</a>
-      <a href="categorie.php">Diplomatie</a>
+      <?php foreach ($categories as $cat) { ?>
+        <a href="categorie.php?id=<?= $cat['id'] ?>"><?= htmlspecialchars($cat['name']) ?></a>
+      <?php } ?>
       <a href="a-propos.php">À propos</a>
     </nav>
   </header>
@@ -622,16 +632,9 @@
   <div class="ticker-wrap" aria-label="Flux d'actualité en direct">
     <div class="ticker-label">En direct</div>
     <div class="ticker-inner">
-      <span>Frappes signalées dans le nord-ouest de l'Iran</span>
-      <span>Le Conseil de sécurité de l'ONU se réunit en urgence</span>
-      <span>Téhéran annonce la suspension partielle de l'enrichissement</span>
-      <span>2,3 millions de déplacés selon le HCR</span>
-      <span>Washington impose de nouvelles sanctions sur le pétrole iranien</span>
-      <span>Frappes signalées dans le nord-ouest de l'Iran</span>
-      <span>Le Conseil de sécurité de l'ONU se réunit en urgence</span>
-      <span>Téhéran annonce la suspension partielle de l'enrichissement</span>
-      <span>2,3 millions de déplacés selon le HCR</span>
-      <span>Washington impose de nouvelles sanctions sur le pétrole iranien</span>
+      <?php foreach ($allArticlesForTicker as $ticker_art) { ?>
+      <span><a href="article.php?slug=<?= urlencode($ticker_art['slug']) ?>" style="color: inherit; text-decoration: none;">◆ <?= htmlspecialchars(substr($ticker_art['title'], 0, 80)) ?></a></span>
+      <?php } ?>
     </div>
   </div>
 
@@ -640,49 +643,31 @@
     <!-- HERO -->
     <section class="hero" aria-label="Article à la une">
       <div class="hero-main">
-        <div class="hero-img-placeholder" role="img" aria-label="Carte du conflit en Iran et dans la région du Golfe Persique">
+        <div class="hero-img-placeholder" role="img" aria-label="<?= htmlspecialchars($heroArticle['meta_description'] ?? 'Actualités') ?>">
           ایران
         </div>
         <div class="hero-label">À la une</div>
-        <h2>Négociations à Genève : <em>l'impasse nucléaire</em> au cœur des pourparlers de mars 2026</h2>
-        <p class="hero-excerpt">Les délégations américaine, européenne et iranienne se retrouvent à Genève pour tenter de relancer un dialogue suspendu depuis l'automne 2025. L'enrichissement de l'uranium reste la principale pomme de discorde.</p>
+        <h2><?= htmlspecialchars($heroArticle['title'] ?? 'Actualité') ?></h2>
+        <p class="hero-excerpt"><?= htmlspecialchars(substr(strip_tags($heroArticle['content'] ?? ''), 0, 150)) ?>...</p>
         <div class="hero-meta">
-          <span class="cat-tag">Diplomatie</span>
-          <span>Par la rédaction</span>
-          <span>28 mars 2026</span>
-          <span>8 min de lecture</span>
+          <span class="cat-tag"><?= htmlspecialchars($heroArticle['category_name'] ?? 'Général') ?></span>
+          <span>Par <?= htmlspecialchars($heroArticle['author_username'] ?? 'la rédaction') ?></span>
+          <span><?= $heroArticle ? date('d M Y', strtotime($heroArticle['published_at'])) : '' ?></span>
+          <span><?= intval(strlen(strip_tags($heroArticle['content'] ?? '')) / 200) ?> min de lecture</span>
         </div>
-        <a href="article.php
-        " class="read-more">Lire l'article complet</a>
+        <a href="article.php?slug=<?= $heroArticle ? urlencode($heroArticle['slug']) : '#' ?>" class="read-more">Lire l'article complet</a>
       </div>
 
       <aside class="hero-sidebar" aria-label="Articles récents">
         <p class="sidebar-section-title">À lire aussi</p>
         <ul class="sidebar-articles">
+          <?php foreach (array_slice($sidebarArticles, 1, 4) as $art) { ?>
           <li>
-            <div class="art-cat">Militaire</div>
-            <h3><a href="article.php
-            ">Les forces en présence : IRGC, armée régulière et milices alliées</a></h3>
-            <div class="art-date">27 mars 2026</div>
+            <div class="art-cat"><?= htmlspecialchars($art['category_name'] ?? 'Article') ?></div>
+            <h3><a href="article.php?slug=<?= urlencode($art['slug']) ?>"><?= htmlspecialchars($art['title']) ?></a></h3>
+            <div class="art-date"><?= $art['published_at'] ? date('d M Y', strtotime($art['published_at'])) : '' ?></div>
           </li>
-          <li>
-            <div class="art-cat">Humanitaire</div>
-            <h3><a href="article.php
-            ">Situation humanitaire : 2 millions de déplacés en 2025</a></h3>
-            <div class="art-date">26 mars 2026</div>
-          </li>
-          <li>
-            <div class="art-cat">Politique</div>
-            <h3><a href="article.php
-            ">Chronologie du conflit : les origines de la crise en Iran</a></h3>
-            <div class="art-date">24 mars 2026</div>
-          </li>
-          <li>
-            <div class="art-cat">Sanctions</div>
-            <h3><a href="article.php
-            ">L'économie iranienne sous pression : bilan des sanctions 2025</a></h3>
-            <div class="art-date">22 mars 2026</div>
-          </li>
+          <?php } ?>
         </ul>
       </aside>
     </section>
@@ -692,87 +677,43 @@
       <div class="section-header">
         <h2>Dernières analyses</h2>
         <span class="section-line"></span>
-        <a href="categorie.php
-        ">Voir tout →</a>
+        <a href="categorie.php">Voir tout →</a>
       </div>
       <div class="articles-grid">
+        <?php foreach ($latestArticles as $article) { 
+          $abbrev = strtoupper(substr($article['category_slug'] ?? 'gen', 0, 3));
+        ?>
         <article class="article-card fade-in">
           <div class="card-img">
-            <div class="card-img-fill pol" role="img" aria-label="Illustration politique — Téhéran, Iran">Pol</div>
+            <div class="card-img-fill <?= strtoupper(substr($article['category_slug'] ?? 'gen', 0, 3)) ?>" role="img" aria-label="<?= htmlspecialchars($article['category_name'] ?? 'Article') ?>"><?= strtoupper(substr($article['category_slug'] ?? 'gen', 0, 3)) ?></div>
           </div>
-          <div class="card-cat">Politique</div>
-          <h3><a href="article.php
-          ">Le régime iranien face à la pression interne et internationale</a></h3>
-          <p class="card-excerpt">La double contrainte d'une opposition intérieure grandissante et des pressions diplomatiques extérieures fragilise le gouvernement de Téhéran.</p>
+          <div class="card-cat"><?= htmlspecialchars($article['category_name'] ?? 'Article') ?></div>
+          <h3><a href="article.php?slug=<?= urlencode($article['slug']) ?>"><?= htmlspecialchars($article['title']) ?></a></h3>
+          <p class="card-excerpt"><?= htmlspecialchars(substr(strip_tags($article['content']), 0, 120)) ?>...</p>
           <div class="card-meta">
-            <span>25 mars 2026</span>
+            <span><?= $article['published_at'] ? date('d M Y', strtotime($article['published_at'])) : '' ?></span>
             <span>·</span>
-            <span>6 min</span>
+            <span><?= intval(strlen(strip_tags($article['content'])) / 200) ?> min</span>
           </div>
         </article>
-        <article class="article-card fade-in">
-          <div class="card-img">
-            <div class="card-img-fill mil" role="img" aria-label="Illustration militaire — Forces armées iraniennes">Mil</div>
-          </div>
-          <div class="card-cat">Militaire</div>
-          <h3><a href="article.php
-          ">Frappes de drones : une nouvelle doctrine de guerre dans le Golfe</a></h3>
-          <p class="card-excerpt">L'utilisation massive de drones kamikaze redéfinit les règles d'engagement dans la région et oblige les puissances à revoir leurs défenses.</p>
-          <div class="card-meta">
-            <span>23 mars 2026</span>
-            <span>·</span>
-            <span>5 min</span>
-          </div>
-        </article>
-        <article class="article-card fade-in">
-          <div class="card-img">
-            <div class="card-img-fill hum" role="img" aria-label="Illustration humanitaire — Aide aux civils iraniens">Hum</div>
-          </div>
-          <div class="card-cat">Humanitaire</div>
-          <h3><a href="article.php
-          ">L'accès humanitaire entravé : témoignages de terrain des ONG</a></h3>
-          <p class="card-excerpt">Médecins Sans Frontières et le CICR dénoncent des restrictions d'accès sans précédent dans les zones de conflit en Iran.</p>
-          <div class="card-meta">
-            <span>21 mars 2026</span>
-            <span>·</span>
-            <span>7 min</span>
-          </div>
-        </article>
+        <?php } ?>
       </div>
     </section>
 
     <!-- CATEGORIES -->
     <section class="categories-strip" aria-label="Explorer par thématique">
-      <h2>Explorer par thématique</h2>
+        <h2>Explorer par thématique</h2>
       <div class="cat-grid">
-        <a href="categorie.php
-        " class="cat-card">
-          <span class="cat-icon">🏛</span>
-          <h3>Politique</h3>
-          <p>Gouvernance, régime, opposition et dynamiques de pouvoir</p>
-          <div class="cat-count">12 articles</div>
-        </a>
-        <a href="categorie.php
-        " class="cat-card">
-          <span class="cat-icon">⚔</span>
-          <h3>Militaire</h3>
-          <p>Opérations, forces armées, drones et frappes aériennes</p>
-          <div class="cat-count">18 articles</div>
-        </a>
-        <a href="categorie.php
-        " class="cat-card">
-          <span class="cat-icon">🤝</span>
-          <h3>Diplomatie</h3>
-          <p>Négociations, sanctions, accords et relations internationales</p>
-          <div class="cat-count">9 articles</div>
-        </a>
-        <a href="categorie.php
-        " class="cat-card">
-          <span class="cat-icon">🏥</span>
-          <h3>Humanitaire</h3>
-          <p>Civils, réfugiés, aide internationale et droits humains</p>
-          <div class="cat-count">14 articles</div>
-        </a>
+        <?php foreach ($categories as $cat) { ?>
+            <a href="categorie.php?slug=<?= urlencode($cat['slug']) ?>" class="cat-card">
+              <span class="cat-icon">🏛</span>
+              <h3><?php echo htmlspecialchars($cat['name']); ?></h3>
+              <p><?php echo htmlspecialchars($cat['description']); ?></p>
+              <?php if (isset($cat['article_count'])) { ?>
+              <div class="cat-count"><?= $cat['article_count'] ?> article<?= $cat['article_count'] > 1 ? 's' : '' ?></div>
+              <?php } ?>
+            </a>
+       <?php }?>
       </div>
     </section>
 
@@ -798,23 +739,15 @@
       <div class="footer-col">
         <h4>Rubriques</h4>
         <ul>
-          <li><a href="categorie.php
-          ">Politique</a></li>
-          <li><a href="categorie.php
-          ">Militaire</a></li>
-          <li><a href="categorie.php
-          ">Humanitaire</a></li>
-          <li><a href="categorie.php
-          ">Diplomatie</a></li>
-          <li><a href="categorie.php
-          ">Sanctions</a></li>
+          <?php foreach ($categories as $cat) { ?>
+          <li><a href="categorie.php?slug=<?= urlencode($cat['slug']) ?>"><?= htmlspecialchars($cat['name']) ?></a></li>
+          <?php } ?>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Site</h4>
         <ul>
-          <li><a href="a-propos.php
-          ">À propos</a></li>
+          <li><a href="a-propos.php">À propos</a></li>
           <li><a href="#">Mentions légales</a></li>
           <li><a href="#">Politique de confidentialité</a></li>
           <li><a href="#">Contact</a></li>
@@ -836,5 +769,4 @@
   </footer>
 
 </body>
-</php
->
+</html>

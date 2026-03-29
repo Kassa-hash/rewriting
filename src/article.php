@@ -1,3 +1,22 @@
+<?php
+    include 'fonction.php';
+    
+    // Récupérer l'article par slug depuis l'URL
+    $slug = $_GET['slug'] ?? 'negociations-geneve-pourparlers-mars-2026';
+    $article = getArticleBySlug($slug, true);
+    
+    // Rediriger si article non trouvé
+    if ($article === null) {
+        header('HTTP/1.0 404 Not Found');
+        exit('Article non trouvé');
+    }
+    
+    // Récupérer les articles connexes
+    $relatedArticles = getRelatedPublishedArticles($article['id'], $article['category_id'] ?? null, 4);
+    
+    // Récupérer toutes les catégories pour la navigation
+    $categories = getAllCategories(false);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -508,7 +527,7 @@
 
   <div class="topbar">
     <a href="index.php">← Iran Observateur</a>
-    &nbsp;·&nbsp; Dimanche 29 mars 2026 &nbsp;·&nbsp; Diplomatie
+    &nbsp;·&nbsp; <?= date('l d F Y', strtotime($article['published_at'])) ?> &nbsp;·&nbsp; <?= htmlspecialchars($article['category_name'] ?? 'Article') ?>
   </div>
 
   <header>
@@ -523,10 +542,9 @@
     </div>
     <nav aria-label="Navigation principale">
       <a href="index.php">Accueil</a>
-      <a href="categorie.php">Politique</a>
-      <a href="categorie.php">Militaire</a>
-      <a href="categorie.php">Humanitaire</a>
-      <a href="categorie.php">Diplomatie</a>
+      <?php foreach ($categories as $cat) { ?>
+        <a href="categorie.php?slug=<?= urlencode($cat['slug']) ?>"><?= htmlspecialchars($cat['name']) ?></a>
+      <?php } ?>
       <a href="a-propos.php">À propos</a>
     </nav>
   </header>
@@ -534,19 +552,21 @@
   <nav class="breadcrumb" aria-label="Fil d'Ariane">
     <a href="index.php">Accueil</a>
     <span>/</span>
-    <a href="categorie.php">Diplomatie</a>
-    <span>/</span>
-    <span>Négociations à Genève</span>
+    <?php if ($article['category_id']) { ?>
+      <a href="categorie.php?slug=<?= urlencode($article['category_slug']) ?>"><?= htmlspecialchars($article['category_name']) ?></a>
+      <span>/</span>
+    <?php } ?>
+    <span><?= htmlspecialchars($article['title']) ?></span>
   </nav>
 
   <div class="article-wrap">
 
     <article class="article-main">
 
-      <div class="article-cat">Diplomatie</div>
+      <div class="article-cat"><?= htmlspecialchars($article['category_name'] ?? 'Article') ?></div>
 
       <h1 class="article-headline">
-        Négociations à Genève : <em>l'impasse nucléaire</em> au cœur des pourparlers de mars 2026
+        <?= htmlspecialchars($article['title']) ?>
       </h1>
 
       <p class="article-deck">
