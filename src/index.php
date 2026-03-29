@@ -182,7 +182,7 @@
     main { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
 
     /* HERO */
-    .hero {
+    /* .hero {
       display: grid;
       grid-template-columns: 1fr 340px;
       gap: 0;
@@ -265,7 +265,7 @@
       font-style: italic;
       opacity: 0.6;
       letter-spacing: -0.02em;
-    }
+    } */
     .read-more {
       display: inline-flex;
       align-items: center;
@@ -644,7 +644,11 @@
     <section class="hero" aria-label="Article à la une">
       <div class="hero-main">
         <div class="hero-img-placeholder" role="img" aria-label="<?= htmlspecialchars($heroArticle['meta_description'] ?? 'Actualités') ?>">
-          ایران
+            <?php if ($heroArticle && $heroArticle['media_filename']): ?>
+                <img style="width: 100%; height: 100%; object-fit: cover;" src="uploads/<?= htmlspecialchars($heroArticle['media_filename']) ?>" alt="<?= htmlspecialchars($heroArticle['media_alt_text'] ?? $heroArticle['title']) ?>">
+            <?php else: ?>
+                ایران
+            <?php endif; ?>
         </div>
         <div class="hero-label">À la une</div>
         <h2><?= htmlspecialchars($heroArticle['title'] ?? 'Actualité') ?></h2>
@@ -685,7 +689,11 @@
         ?>
         <article class="article-card fade-in">
           <div class="card-img">
-            <div class="card-img-fill <?= strtoupper(substr($article['category_slug'] ?? 'gen', 0, 3)) ?>" role="img" aria-label="<?= htmlspecialchars($article['category_name'] ?? 'Article') ?>"><?= strtoupper(substr($article['category_slug'] ?? 'gen', 0, 3)) ?></div>
+            <?php if ($article['media_filename']) { ?>
+              <img src="uploads/<?= htmlspecialchars($article['media_filename']) ?>" alt="<?= htmlspecialchars($article['media_alt_text'] ?? $article['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+            <?php } else { ?>
+              <div class="card-img-fill <?= $abbrev ?>" role="img" aria-label="<?= htmlspecialchars($article['category_name'] ?? 'Article') ?>"><?= $abbrev ?></div>
+            <?php } ?>
           </div>
           <div class="card-cat"><?= htmlspecialchars($article['category_name'] ?? 'Article') ?></div>
           <h3><a href="article.php?slug=<?= urlencode($article['slug']) ?>"><?= htmlspecialchars($article['title']) ?></a></h3>
