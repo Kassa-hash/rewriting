@@ -1,0 +1,27 @@
+# Réécriture d'URL pour Iran Observateur
+# Active le moteur de réécriture d'URL
+RewriteEngine On
+
+# Définit la base relative
+RewriteBase /
+
+# Évite les boucles infinies
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
+
+# Ne réécrit pas les fichiers existants
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# === ARTICLE ===
+# /article/slug-de-l-article → article.php?slug=slug-de-l-article
+RewriteRule ^article/([a-z0-9\-]+)/?$ article.php?slug=$1 [QSA,L]
+
+# === CATEGORIE ===
+# /categorie/slug-categorie → categorie.php?slug=slug-categorie
+# /categorie/slug-categorie/page/2 → categorie.php?slug=slug-categorie&page=2
+RewriteRule ^categorie/([a-z0-9\-]+)/?$ categorie.php?slug=$1 [QSA,L]
+RewriteRule ^categorie/([a-z0-9\-]+)/page/([0-9]+)/?$ categorie.php?slug=$1&page=$2 [QSA,L]
+
+# === STATIQUES ===
+# /a-propos → a-propos.php
+RewriteRule ^([a-z\-]+)/?$ $1.php [QSA,L]
