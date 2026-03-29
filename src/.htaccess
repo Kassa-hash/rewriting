@@ -22,6 +22,25 @@ RewriteRule ^article/([a-z0-9\-]+)/?$ article.php?slug=$1 [QSA,L]
 RewriteRule ^categorie/([a-z0-9\-]+)/?$ categorie.php?slug=$1 [QSA,L]
 RewriteRule ^categorie/([a-z0-9\-]+)/page/([0-9]+)/?$ categorie.php?slug=$1&page=$2 [QSA,L]
 
+# === CONNEXION ===
+# /login → login.php
+RewriteRule ^login/?$ login.php [QSA,L]
+# /logout → logout.php
+RewriteRule ^logout/?$ logout.php [QSA,L]
+
+# === ADMIN ===
+# /admin/articles/edit/ID → admin/articles/create.php?action=edit&id=ID
+RewriteRule ^admin/articles/edit/([0-9]+)/?$ admin/articles/create.php?action=edit&id=$1 [QSA,L]
+# /admin/articles/create → admin/articles/create.php
+RewriteRule ^admin/articles/create/?$ admin/articles/create.php [QSA,L]
+# /admin/articles → admin/articles.php
+RewriteRule ^admin/articles/?$ admin/articles.php [QSA,L]
+# Media upload/delete
+RewriteRule ^admin/articles/media/upload/?$ admin/articles/media/upload.php [QSA,L]
+RewriteRule ^admin/articles/media/delete/?$ admin/articles/media/delete.php [QSA,L]
+# /admin → admin/articles.php (redirect to articles)
+RewriteRule ^admin/?$ admin/articles.php [QSA,L]
+
 # === STATIQUES ===
 # /a-propos → a-propos.php
 RewriteRule ^([a-z\-]+)/?$ $1.php [QSA,L]
