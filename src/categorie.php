@@ -1,18 +1,51 @@
+<?php
+    include 'fonction.php';
+    
+    // Récupérer la catégorie par slug ou ID
+    $slug = $_GET['slug'] ?? null;
+    $id = $_GET['id'] ?? null;
+    
+    $category = null;
+    if ($slug) {
+        $category = getCategoryBySlug($slug);
+    } elseif ($id) {
+        $category = getCategoryById((int)$id);
+    }
+    
+    // Redirection si catégorie non trouvée
+    if (!$category) {
+        header('Location: index.php');
+        exit;
+    }
+    
+    // Pagination
+    $page = max(1, (int)($_GET['page'] ?? 1));
+    $perPage = 10;
+    $offset = ($page - 1) * $perPage;
+    
+    // Récupérer articles et total
+    $articles = getArticlesByCategorySlug($category['slug'], $perPage, $offset);
+    $total = countPublishedArticlesByCategorySlug($category['slug']);
+    $pages = ceil($total / $perPage);
+    
+    // Récupérer catégories pour nav
+    $allCategories = getAllCategories(false);
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Diplomatie — Analyses et reportages sur la diplomatie iranienne — Iran Observateur</title>
-  <meta name="description" content="Retrouvez tous nos articles sur la diplomatie iranienne : négociations, sanctions, accords internationaux et relations avec les grandes puissances.">
-  <meta name="keywords" content="Iran diplomatie, négociations nucléaires, sanctions, JCPOA, ONU, relations internationales">
+  <title><?= htmlspecialchars($category['name']) ?> — Analyses et reportages — Iran Observateur</title>
+  <meta name="description" content="<?= htmlspecialchars($category['description'] ?? 'Retrouvez tous nos articles sur ' . $category['name']) ?>">
+  <meta name="keywords" content="Iran, <?= htmlspecialchars($category['name']) ?>, analyse, reportage">
   <meta name="author" content="Iran Observateur">
-  <meta property="og:title" content="Diplomatie — Iran Observateur">
-  <meta property="og:description" content="Toutes les analyses sur la diplomatie iranienne et les relations internationales.">
+  <meta property="og:title" content="<?= htmlspecialchars($category['name']) ?> — Iran Observateur">
+  <meta property="og:description" content="<?= htmlspecialchars($category['description'] ?? 'Retrouvez tous nos articles sur ' . $category['name']) ?>">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://iran-observateur.local/diplomatie">
+  <meta property="og:url" content="https://iran-observateur.local/<?= htmlspecialchars($category['slug']) ?>">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://iran-observateur.local/diplomatie">
+  <link rel="canonical" href="https://iran-observateur.local/<?= htmlspecialchars($category['slug']) ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -68,10 +101,7 @@
       line-height: 1;
     }
     .site-title h1 span { color: var(--accent); }
-    nav {
-      display: flex;
-      justify-content: center;
-    }
+    nav { display: flex; justify-content: center; }
     nav a {
       display: block;
       padding: 12px 20px;
@@ -101,7 +131,6 @@
     }
     .breadcrumb a { color: var(--muted); text-decoration: none; }
     .breadcrumb a:hover { color: var(--accent); }
-    .breadcrumb span { opacity: 0.5; }
 
     /* CATEGORY HERO */
     .cat-hero {
@@ -109,35 +138,6 @@
       color: var(--paper);
       padding: 60px 40px;
       margin-bottom: 0;
-      position: relative;
-      overflow: hidden;
-    }
-    .cat-hero::before {
-      content: "Diplomatie";
-      position: absolute;
-      right: -20px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-family: 'Playfair Display', serif;
-      font-size: 160px;
-      font-style: italic;
-      font-weight: 900;
-      opacity: 0.05;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-    .cat-hero-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      position: relative;
-    }
-    .cat-hero-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
     }
     .cat-hero h2 {
       font-family: 'Playfair Display', serif;
@@ -157,15 +157,11 @@
       display: flex;
       gap: 32px;
     }
-    .cat-stat {
-      text-align: center;
-    }
     .cat-stat-num {
       font-family: 'Playfair Display', serif;
       font-size: 36px;
       font-weight: 700;
       color: var(--accent);
-      display: block;
     }
     .cat-stat-label {
       font-family: 'JetBrains Mono', monospace;
@@ -175,154 +171,12 @@
       opacity: 0.6;
     }
 
-    /* SUBCATEGORIES */
-    .subcats {
-      background: var(--cream);
-      border-bottom: 1px solid var(--border);
-      padding: 0 40px;
-    }
-    .subcats-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-    }
-    .subcats a {
-      display: block;
-      padding: 14px 20px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      text-decoration: none;
-      border-right: 1px solid var(--border);
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .subcats a:hover, .subcats a.active {
-      color: var(--ink);
-      background: var(--paper);
-    }
-    .subcats a.active { font-weight: 500; }
-
-    /* MAIN LAYOUT */
+    /* ARTICLE LIST */
     .page-layout {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 40px;
-      display: grid;
-      grid-template-columns: 1fr 280px;
-      gap: 56px;
-      align-items: start;
+      padding: 40px;
     }
-
-    /* FILTERS */
-    .filters-bar {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-    }
-    .filters-label {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-    .filter-btn {
-      border: 1px solid var(--border);
-      background: none;
-      padding: 6px 14px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      cursor: pointer;
-      color: var(--muted);
-      transition: all 0.2s;
-    }
-    .filter-btn:hover, .filter-btn.active {
-      background: var(--ink);
-      color: var(--paper);
-      border-color: var(--ink);
-    }
-    .sort-select {
-      margin-left: auto;
-      border: 1px solid var(--border);
-      background: var(--paper);
-      padding: 6px 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      cursor: pointer;
-      outline: none;
-    }
-
-    /* ARTICLE LIST */
-    .article-featured {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      padding-bottom: 40px;
-      margin-bottom: 40px;
-      border-bottom: 2px solid var(--ink);
-    }
-    .article-featured-img {
-      aspect-ratio: 4/3;
-      background: linear-gradient(135deg, #1a3a5c 0%, #0f0e0c 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--paper);
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 52px;
-      opacity: 0.6;
-    }
-    .featured-content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    .featured-badge {
-      display: inline-block;
-      background: var(--accent);
-      color: white;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      margin-bottom: 16px;
-    }
-    .featured-content h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 28px;
-      font-weight: 700;
-      line-height: 1.2;
-      margin-bottom: 14px;
-    }
-    .featured-content h2 a { color: var(--ink); text-decoration: none; }
-    .featured-content h2 a:hover { color: var(--accent); }
-    .featured-content p {
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.65;
-      margin-bottom: 20px;
-    }
-    .featured-meta {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-      display: flex;
-      gap: 12px;
-    }
-
-    /* ARTICLE ROWS */
     .articles-list { display: flex; flex-direction: column; gap: 0; }
     .article-row {
       display: grid;
@@ -349,7 +203,6 @@
       opacity: 0.7;
       flex-shrink: 0;
     }
-    .row-content {}
     .row-cat {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
@@ -389,95 +242,24 @@
     }
     .page-btn {
       border: 1px solid var(--border);
-      border-right: none;
+      background: none;
       padding: 10px 16px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
       cursor: pointer;
-      background: none;
-      color: var(--muted);
-      transition: all 0.2s;
-    }
-    .page-btn:last-child { border-right: 1px solid var(--border); }
-    .page-btn:hover, .page-btn.active {
-      background: var(--ink);
-      color: var(--paper);
-      border-color: var(--ink);
-    }
-
-    /* SIDEBAR */
-    .cat-sidebar {}
-    .sidebar-widget {
-      border-top: 2px solid var(--ink);
-      padding-top: 20px;
-      margin-bottom: 36px;
-    }
-    .sidebar-widget h3 {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .tag-cloud {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .tag-cloud a {
-      border: 1px solid var(--border);
-      padding: 4px 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
       color: var(--muted);
       text-decoration: none;
       transition: all 0.2s;
     }
-    .tag-cloud a:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-    .cat-list { list-style: none; }
-    .cat-list li {
-      padding: 10px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .cat-list li:last-child { border-bottom: none; }
-    .cat-list a {
-      font-family: 'Source Serif 4', serif;
-      font-size: 14px;
-      color: var(--ink);
-      text-decoration: none;
-    }
-    .cat-list a:hover { color: var(--accent); }
-    .cat-list .count {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--muted);
-    }
-    .timeline-widget {}
-    .timeline-item {
-      display: flex;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .timeline-item:last-child { border-bottom: none; }
-    .timeline-date {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--accent);
-      min-width: 44px;
-      padding-top: 2px;
-    }
-    .timeline-text { font-size: 13px; line-height: 1.5; color: var(--muted); }
+    .page-btn:hover, .page-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+    .page-btn.active { font-weight: 600; }
 
     footer {
       background: var(--ink);
       color: var(--paper);
       padding: 40px;
-      margin-top: 40px;
+      text-align: center;
+      margin-top: 60px;
     }
     .footer-inner {
       max-width: 1200px;
@@ -488,291 +270,115 @@
       flex-wrap: wrap;
       gap: 16px;
     }
-    .footer-inner .brand { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 900; }
-    .footer-inner .brand span { color: var(--accent); }
-    .footer-inner nav a {
-      color: rgba(245,240,232,0.6);
-      text-decoration: none;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border: none;
-    }
-    .footer-inner nav a:hover { color: var(--paper); background: none; }
     .footer-copyright {
+      width: 100%;
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       color: rgba(255,255,255,0.3);
-      max-width: 1200px;
-      margin: 24px auto 0;
+      margin-top: 24px;
     }
 
     @media (max-width: 900px) {
-      header { padding: 0 20px; }
-      .cat-hero, .subcats { padding-left: 20px; padding-right: 20px; }
-      .page-layout { grid-template-columns: 1fr; padding: 24px 20px; }
-      .article-featured { grid-template-columns: 1fr; }
-      .breadcrumb { padding: 0 20px; }
-      nav { overflow-x: auto; justify-content: flex-start; }
+      header, .breadcrumb { padding: 0 20px; }
+      .page-layout { padding: 20px; }
     }
   </style>
 </head>
 <body>
 
   <div class="topbar">
-    <a href="index.html">← Iran Observateur</a>
-    &nbsp;·&nbsp; Catégorie : Diplomatie &nbsp;·&nbsp; 9 articles
+    <a href="index.php">← Iran Observateur</a>
   </div>
 
   <header>
     <div class="header-top">
-      <div class="site-date"><div>Vol. XII — N°88</div></div>
-      <div class="site-title">
-        <a href="index.html"><h1>Iran <span>Observateur</span></h1></a>
+      <div class="site-date">
+        <div>Vol. XII — N°88</div>
       </div>
-      <div style="width:100px"></div>
+      <div class="site-title">
+        <a href="index.php"><h1>Iran <span>Observateur</span></h1></a>
+      </div>
+      <div style="width: 100px;"></div>
     </div>
     <nav aria-label="Navigation principale">
-      <a href="index.html">Accueil</a>
-      <a href="categorie.html">Politique</a>
-      <a href="categorie.html">Militaire</a>
-      <a href="categorie.html">Humanitaire</a>
-      <a href="categorie.html" class="active">Diplomatie</a>
-      <a href="a-propos.html">À propos</a>
+      <a href="index.php">Accueil</a>
+      <?php foreach ($allCategories as $cat) { ?>
+        <a href="categorie.php?slug=<?= urlencode($cat['slug']) ?>" <?= $cat['id'] == $category['id'] ? 'class="active"' : '' ?>>
+          <?= htmlspecialchars($cat['name']) ?>
+        </a>
+      <?php } ?>
+      <a href="a-propos.php">À propos</a>
     </nav>
   </header>
 
   <nav class="breadcrumb" aria-label="Fil d'Ariane">
-    <a href="index.html">Accueil</a>
+    <a href="index.php">Accueil</a>
     <span>/</span>
-    <span>Diplomatie</span>
+    <span><?= htmlspecialchars($category['name']) ?></span>
   </nav>
 
-  <div class="cat-hero">
-    <div class="cat-hero-inner">
-      <div class="cat-hero-label">Rubrique</div>
-      <h2>Diplomatie</h2>
-      <p>Négociations, accords internationaux, sanctions économiques et relations entre l'Iran et les grandes puissances mondiales.</p>
-      <div class="cat-stats">
-        <div class="cat-stat">
-          <span class="cat-stat-num">9</span>
-          <span class="cat-stat-label">Articles</span>
-        </div>
-        <div class="cat-stat">
-          <span class="cat-stat-num">3</span>
-          <span class="cat-stat-label">Analyses</span>
-        </div>
-        <div class="cat-stat">
-          <span class="cat-stat-num">2026</span>
-          <span class="cat-stat-label">En cours</span>
-        </div>
+  <section class="cat-hero">
+    <h2><?= htmlspecialchars($category['name']) ?></h2>
+    <p><?= htmlspecialchars($category['description'] ?? '') ?></p>
+    <div class="cat-stats">
+      <div>
+        <span class="cat-stat-num"><?= $total ?></span>
+        <div class="cat-stat-label">Article<?= $total > 1 ? 's' : '' ?></div>
+      </div>
+      <div>
+        <span class="cat-stat-num"><?= $pages ?></span>
+        <div class="cat-stat-label">Page<?= $pages > 1 ? 's' : '' ?></div>
       </div>
     </div>
-  </div>
-
-  <div class="subcats">
-    <div class="subcats-inner">
-      <a href="categorie.html" class="active">Tout</a>
-      <a href="categorie.html">Nucléaire</a>
-      <a href="categorie.html">Sanctions</a>
-      <a href="categorie.html">ONU</a>
-      <a href="categorie.html">Relations bilatérales</a>
-      <a href="categorie.html">Accords</a>
-    </div>
-  </div>
+  </section>
 
   <div class="page-layout">
-
-    <main aria-label="Liste des articles Diplomatie">
-
-      <!-- FILTERS -->
-      <div class="filters-bar">
-        <span class="filters-label">Filtrer :</span>
-        <button class="filter-btn active" onclick="setFilter(this,'tous')">Tous</button>
-        <button class="filter-btn" onclick="setFilter(this,'analyse')">Analyses</button>
-        <button class="filter-btn" onclick="setFilter(this,'reportage')">Reportages</button>
-        <button class="filter-btn" onclick="setFilter(this,'decryptage')">Décryptages</button>
-        <select class="sort-select" aria-label="Trier par">
-          <option>Plus récents</option>
-          <option>Plus lus</option>
-          <option>Plus commentés</option>
-        </select>
-      </div>
-
-      <!-- FEATURED -->
-      <section class="article-featured" aria-label="Article à la une de la rubrique">
-        <div class="article-featured-img" role="img" aria-label="Table des négociations à Genève sur le dossier iranien">ژنو</div>
-        <div class="featured-content">
-          <span class="featured-badge">À la une</span>
-          <h2><a href="article.html">Négociations à Genève : l'impasse nucléaire au cœur des pourparlers de mars 2026</a></h2>
-          <p>Les délégations américaine, européenne et iranienne se retrouvent à Genève pour tenter de relancer un dialogue suspendu depuis l'automne 2025.</p>
-          <div class="featured-meta">
-            <span>28 mars 2026</span>
+    <?php if (count($articles) > 0) { ?>
+    <div class="articles-list">
+      <?php foreach ($articles as $art) { ?>
+      <a href="article.php?slug=<?= urlencode($art['slug']) ?>" class="article-row">
+        <div class="row-thumb"><?= strtoupper(substr($art['category_slug'] ?? 'cat', 0, 3)) ?></div>
+        <div class="row-content">
+          <div class="row-cat"><?= htmlspecialchars($art['category_name'] ?? 'Article') ?></div>
+          <h3><?= htmlspecialchars($art['title']) ?></h3>
+          <p><?= htmlspecialchars(substr(strip_tags($art['content']), 0, 150)) ?>...</p>
+          <div class="row-meta">
+            <span><?= $art['published_at'] ? date('d M Y', strtotime($art['published_at'])) : '' ?></span>
             <span>·</span>
-            <span>8 min</span>
-            <span>·</span>
-            <span>Analyse</span>
+            <span><?= intval(strlen(strip_tags($art['content'])) / 200) ?> min</span>
           </div>
         </div>
-      </section>
+      </a>
+      <?php } ?>
+    </div>
 
-      <!-- ARTICLE LIST -->
-      <div class="articles-list" id="article-list">
-        <a href="article.html" class="article-row" data-type="analyse">
-          <div class="row-thumb" style="background:linear-gradient(135deg,#2d2a1a,#0f0e0c)" role="img" aria-label="Illustration sanctions économiques iraniennes">💼</div>
-          <div class="row-content">
-            <div class="row-cat">Sanctions</div>
-            <h3>L'économie iranienne sous pression : bilan des sanctions 2025</h3>
-            <p>Un an après le nouveau train de sanctions occidental, l'économie iranienne montre des signes de fragilité croissante malgré des stratégies de contournement actives.</p>
-            <div class="row-meta"><span>22 mars 2026</span><span>·</span><span>6 min</span><span>·</span><span>Analyse</span></div>
-          </div>
-        </a>
-        <a href="article.html" class="article-row" data-type="reportage">
-          <div class="row-thumb" style="background:linear-gradient(135deg,#1a3a5c,#0f0e0c)" role="img" aria-label="Illustration ONU et dossier iranien">🏛</div>
-          <div class="row-content">
-            <div class="row-cat">ONU</div>
-            <h3>Le Conseil de sécurité divisé face à l'escalade iranienne</h3>
-            <p>La Chine et la Russie ont opposé leur veto à une résolution américaine visant à renforcer les inspections de l'AIEA en Iran.</p>
-            <div class="row-meta"><span>18 mars 2026</span><span>·</span><span>5 min</span><span>·</span><span>Reportage</span></div>
-          </div>
-        </a>
-        <a href="article.html" class="article-row" data-type="decryptage">
-          <div class="row-thumb" style="background:linear-gradient(135deg,#1a2d1a,#0f0e0c)" role="img" aria-label="Illustration JCPOA et accord nucléaire iranien">📋</div>
-          <div class="row-content">
-            <div class="row-cat">Nucléaire</div>
-            <h3>Le JCPOA est-il encore sauvable ? Décryptage d'un accord en lambeaux</h3>
-            <p>Dix ans après sa signature, l'accord de Vienne sur le nucléaire iranien n'est plus qu'une coquille vide. Peut-il encore servir de base à un nouveau compromis ?</p>
-            <div class="row-meta"><span>15 mars 2026</span><span>·</span><span>9 min</span><span>·</span><span>Décryptage</span></div>
-          </div>
-        </a>
-        <a href="article.html" class="article-row" data-type="analyse">
-          <div class="row-thumb" style="background:linear-gradient(135deg,#2d1a0e,#0f0e0c)" role="img" aria-label="Illustration relations Iran-Russie">🤝</div>
-          <div class="row-content">
-            <div class="row-cat">Relations bilatérales</div>
-            <h3>Iran-Russie : un rapprochement stratégique aux contours flous</h3>
-            <p>Les livraisons d'armes iraniennes à Moscou ont profondément modifié l'équation diplomatique régionale et les relations de Téhéran avec l'Occident.</p>
-            <div class="row-meta"><span>10 mars 2026</span><span>·</span><span>7 min</span><span>·</span><span>Analyse</span></div>
-          </div>
-        </a>
-        <a href="article.html" class="article-row" data-type="reportage">
-          <div class="row-thumb" style="background:linear-gradient(135deg,#1a3a5c,#0f0e0c)" role="img" aria-label="Illustration Turquie Iran et diplomatie régionale">🌐</div>
-          <div class="row-content">
-            <div class="row-cat">Relations bilatérales</div>
-            <h3>La Turquie, médiateur inattendu dans la crise iranienne</h3>
-            <p>Ankara multiplie les navettes diplomatiques entre Téhéran et les capitales occidentales, jouant un rôle d'intermédiaire discret mais efficace.</p>
-            <div class="row-meta"><span>5 mars 2026</span><span>·</span><span>5 min</span><span>·</span><span>Reportage</span></div>
-          </div>
-        </a>
-        <a href="article.html" class="article-row" data-type="decryptage">
-          <div class="row-thumb" style="background:linear-gradient(135deg,#1a2a1a,#0f0e0c)" role="img" aria-label="Illustration pétrole iranien et sanctions">⛽</div>
-          <div class="row-content">
-            <div class="row-cat">Sanctions</div>
-            <h3>Pétrole iranien : les routes de contournement des sanctions</h3>
-            <p>Malgré les embargos, l'Iran continue d'exporter son pétrole via des réseaux opaques impliquant des tankers fantômes et des intermédiaires asiatiques.</p>
-            <div class="row-meta"><span>28 fév. 2026</span><span>·</span><span>8 min</span><span>·</span><span>Décryptage</span></div>
-          </div>
-        </a>
-      </div>
-
-      <div class="pagination" role="navigation" aria-label="Pagination">
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-        <button class="page-btn">→</button>
-      </div>
-
-    </main>
-
-    <!-- SIDEBAR -->
-    <aside class="cat-sidebar" aria-label="Navigation secondaire">
-
-      <div class="sidebar-widget">
-        <h3>Toutes les catégories</h3>
-        <ul class="cat-list">
-          <li><a href="categorie.html">Politique</a><span class="count">12</span></li>
-          <li><a href="categorie.html">Militaire</a><span class="count">18</span></li>
-          <li><a href="categorie.html">Humanitaire</a><span class="count">14</span></li>
-          <li><a href="categorie.html" style="color:var(--accent)">Diplomatie</a><span class="count">9</span></li>
-          <li><a href="categorie.html">Sanctions</a><span class="count">7</span></li>
-          <li><a href="categorie.html">Frappes aériennes</a><span class="count">11</span></li>
-          <li><a href="categorie.html">Réfugiés</a><span class="count">8</span></li>
-        </ul>
-      </div>
-
-      <div class="sidebar-widget">
-        <h3>Chronologie diplomatique</h3>
-        <div class="timeline-widget">
-          <div class="timeline-item">
-            <div class="timeline-date">Mars 26</div>
-            <div class="timeline-text">Reprise des négociations à Genève</div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">Déc. 25</div>
-            <div class="timeline-text">Suspension des pourparlers après escalade militaire</div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">Juin 25</div>
-            <div class="timeline-text">Nouvelles sanctions américaines sur le pétrole</div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">Jan. 25</div>
-            <div class="timeline-text">L'Iran annonce 60% d'enrichissement</div>
-          </div>
-          <div class="timeline-item">
-            <div class="timeline-date">2018</div>
-            <div class="timeline-text">Retrait américain du JCPOA</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sidebar-widget">
-        <h3>Tags associés</h3>
-        <div class="tag-cloud">
-          <a href="#">Nucléaire</a>
-          <a href="#">ONU</a>
-          <a href="#">JCPOA</a>
-          <a href="#">États-Unis</a>
-          <a href="#">Russie</a>
-          <a href="#">Turquie</a>
-          <a href="#">AIEA</a>
-          <a href="#">Sanctions</a>
-          <a href="#">Pétrole</a>
-          <a href="#">Israël</a>
-        </div>
-      </div>
-
-    </aside>
+    <?php if ($pages > 1) { ?>
+    <div class="pagination">
+      <?php for ($i = 1; $i <= $pages; $i++) { ?>
+      <a href="categorie.php?slug=<?= urlencode($category['slug']) ?>&page=<?= $i ?>" 
+         class="page-btn <?= $i == $page ? 'active' : '' ?>">
+        <?= $i ?>
+      </a>
+      <?php } ?>
+    </div>
+    <?php } ?>
+    <?php } else { ?>
+    <p style="text-align: center; color: var(--muted); padding: 40px;">Aucun article trouvé dans cette catégorie.</p>
+    <?php } ?>
   </div>
 
   <footer>
     <div class="footer-inner">
-      <div class="brand">Iran <span>Observateur</span></div>
-      <nav aria-label="Navigation pied de page">
-        <a href="index.html">Accueil</a>
-        <a href="categorie.html">Articles</a>
-        <a href="a-propos.html">À propos</a>
-        <a href="#">Contact</a>
+      <div>Iran <span style="color: var(--accent);">Observateur</span></div>
+      <nav>
+        <a href="a-propos.php" style="padding: 4px 12px; text-decoration: none; color: rgba(245,240,232,0.6); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase;">À propos</a>
+        <a href="#" style="padding: 4px 12px; text-decoration: none; color: rgba(245,240,232,0.6); font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase;">Mentions légales</a>
       </nav>
     </div>
-    <div class="footer-copyright">© 2026 Iran Observateur — Mini-projet Web Design</div>
+    <div class="footer-copyright">
+      © 2026 Iran Observateur — Mini-projet Web Design — Tous droits réservés
+    </div>
   </footer>
-
-  <script>
-    function setFilter(btn, type) {
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const rows = document.querySelectorAll('#article-list .article-row');
-      rows.forEach(row => {
-        if (type === 'tous' || row.dataset.type === type) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
-        }
-      });
-    }
-  </script>
 
 </body>
 </html>
