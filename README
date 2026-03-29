@@ -1,1 +1,5 @@
+//Pour initialiser le projet
 docker-compose up --build
+
+//Pour se connecter à la base de donnée
+psql -U user -d rewriting
