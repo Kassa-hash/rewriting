@@ -2,39 +2,52 @@
     include 'fonction.php';
     
     // Récupérer l'article par slug depuis l'URL
-    $slug = $_GET['slug'] ?? 'negociations-geneve-pourparlers-mars-2026';
+    $slug = $_GET['slug'] ?? null;
+    if (!$slug) {
+        header('Location: index.php');
+        exit;
+    }
+    
     $article = getArticleBySlug($slug, true);
     
-    // Rediriger si article non trouvé
     if ($article === null) {
         header('HTTP/1.0 404 Not Found');
         exit('Article non trouvé');
     }
     
-    // Récupérer les articles connexes
+    $articleImages = getArticleMedia($article['id']);
+    
     $relatedArticles = getRelatedPublishedArticles($article['id'], $article['category_id'] ?? null, 4);
     
-    // Récupérer toutes les catégories pour la navigation
     $categories = getAllCategories(false);
+    
+    $recentArticles = getPublishedArticles(3, 0);
+    
+    $pageTitle = $article['meta_title'] ?? htmlspecialchars($article['title'] . ' — Iran Observateur');
+    $pageDescription = $article['meta_description'] ?? htmlspecialchars(substr(strip_tags($article['content']), 0, 160));
+    $pageUrl = 'https://iran-observateur.local/article/' . htmlspecialchars($article['slug']);
+    $publishedDate = $article['published_at'] ? date('Y-m-d', strtotime($article['published_at'])) : date('Y-m-d');
+    $updatedDate = $article['updated_at'] ? date('Y-m-d', strtotime($article['updated_at'])) : $publishedDate;
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Négociations à Genève : l'impasse nucléaire au cœur des pourparlers de mars 2026 — Iran Observateur</title>
-  <meta name="description" content="Les délégations américaine, européenne et iranienne se retrouvent à Genève pour tenter de relancer un dialogue suspendu depuis l'automne 2025. Analyse complète.">
-  <meta name="keywords" content="Genève, négociations, Iran, nucléaire, diplomatie, pourparlers 2026, JCPOA">
-  <meta name="author" content="La rédaction — Iran Observateur">
-  <meta property="og:title" content="Négociations à Genève : l'impasse nucléaire au cœur des pourparlers">
-  <meta property="og:description" content="Analyse des négociations diplomatiques à Genève en mars 2026 sur le dossier iranien.">
+  <title><?= $pageTitle ?></title>
+  <meta name="description" content="<?= $pageDescription ?>">
+  <meta name="keywords" content="Iran, <?= htmlspecialchars($article['category_name'] ?? 'article') ?>, analyse, reportage">
+  <meta name="author" content="<?= htmlspecialchars($article['author_username'] ?? 'La rédaction') ?> — Iran Observateur">
+  <meta property="og:title" content="<?= htmlspecialchars($article['title']) ?> — Iran Observateur">
+  <meta property="og:description" content="<?= $pageDescription ?>">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="https://iran-observateur.local/negociations-geneve-pourparlers-mars-2026">
-  <meta property="article:published_time" content="2026-03-28">
-  <meta property="article:author" content="La rédaction">
-  <meta property="article:section" content="Diplomatie">
+  <meta property="og:url" content="<?= $pageUrl ?>">
+  <meta property="article:published_time" content="<?= $publishedDate ?>">
+  <meta property="article:modified_time" content="<?= $updatedDate ?>">
+  <meta property="article:author" content="<?= htmlspecialchars($article['author_username'] ?? 'Iran Observateur') ?>">
+  <meta property="article:section" content="<?= htmlspecialchars($article['category_name'] ?? 'Articles') ?>">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://iran-observateur.local/negociations-geneve-pourparlers-mars-2026">
+  <link rel="canonical" href="<?= $pageUrl ?>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -90,10 +103,7 @@
       line-height: 1;
     }
     .site-title h1 span { color: var(--accent); }
-    nav {
-      display: flex;
-      justify-content: center;
-    }
+    nav { display: flex; justify-content: center; }
     nav a {
       display: block;
       padding: 12px 20px;
@@ -159,7 +169,6 @@
       letter-spacing: -0.01em;
       margin-bottom: 20px;
     }
-    .article-headline em { color: var(--accent); font-style: italic; }
 
     .article-deck {
       font-family: 'Source Serif 4', serif;
@@ -207,41 +216,32 @@
       margin-top: 2px;
       letter-spacing: 0.06em;
     }
-    .share-btns {
-      display: flex;
-      gap: 8px;
-    }
-    .share-btn {
-      border: 1px solid var(--border);
-      background: none;
-      padding: 6px 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      cursor: pointer;
-      color: var(--muted);
-      transition: all 0.2s;
-    }
-    .share-btn:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 
-    /* ARTICLE IMAGE */
-    .article-img {
-      margin-bottom: 12px;
-      background: var(--ink);
+    /* IMAGE GALLERY */
+    .article-gallery {
+      margin-bottom: 32px;
+      margin-top: 32px;
     }
-    .article-img-fill {
-      width: 100%;
-      height: 340px;
-      background: linear-gradient(135deg, #1a3a5c 0%, #0f0e0c 60%, #2d1a0e 100%);
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .gallery-item {
+      overflow: hidden;
+      background: var(--ink);
+      aspect-ratio: 16/10;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--paper);
-      font-family: 'Playfair Display', serif;
-      font-size: 72px;
-      font-style: italic;
-      opacity: 0.6;
     }
-    .article-img figcaption {
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .gallery-caption {
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       color: var(--muted);
@@ -283,46 +283,6 @@
       line-height: 1.55;
       margin-bottom: 10px;
       color: var(--ink);
-    }
-    .article-body blockquote cite {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      color: var(--muted);
-      font-style: normal;
-      letter-spacing: 0.08em;
-    }
-
-    /* KEY POINTS */
-    .key-points {
-      background: var(--ink);
-      color: var(--paper);
-      padding: 28px 32px;
-      margin: 32px 0;
-    }
-    .key-points h4 {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 16px;
-    }
-    .key-points ul { list-style: none; }
-    .key-points ul li {
-      font-size: 15px;
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-    .key-points ul li:last-child { border-bottom: none; }
-    .key-points ul li::before {
-      content: "◆";
-      color: var(--accent);
-      font-size: 8px;
-      margin-top: 6px;
-      flex-shrink: 0;
     }
 
     /* TAGS */
@@ -391,8 +351,9 @@
       font-family: 'Playfair Display', serif;
       font-style: italic;
       color: var(--paper);
-      font-size: 20px;
+      font-size: 11px;
       opacity: 0.7;
+      text-transform: uppercase;
     }
     .related-info .rel-cat {
       font-family: 'JetBrains Mono', monospace;
@@ -430,6 +391,50 @@
       color: var(--muted);
       margin-bottom: 16px;
     }
+    .sidebar-article-link {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--ink);
+      display: block;
+      transition: color 0.2s;
+    }
+    .sidebar-article-link:hover { color: var(--accent); }
+    .sidebar-cat {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .sidebar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .sidebar-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .sidebar-cat-link {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      text-decoration: none;
+      color: var(--ink);
+      transition: color 0.2s;
+    }
+    .sidebar-cat-link:hover { color: var(--accent); }
+    .sidebar-cat-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
 
     /* PROGRESS */
     .reading-progress {
@@ -441,34 +446,6 @@
       transition: width 0.1s;
       z-index: 100;
       width: 0%;
-    }
-
-    /* FACTS BOX */
-    .facts-box {
-      background: var(--cream);
-      border-left: 4px solid var(--accent2);
-      padding: 20px;
-    }
-    .facts-box h4 {
-      font-family: 'Playfair Display', serif;
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 12px;
-      color: var(--accent2);
-    }
-    .facts-box ul { list-style: none; }
-    .facts-box ul li {
-      font-size: 13px;
-      padding: 6px 0;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-    }
-    .facts-box ul li:last-child { border-bottom: none; }
-    .facts-box ul li strong {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--accent);
     }
 
     footer {
@@ -517,6 +494,7 @@
       .article-wrap { grid-template-columns: 1fr; padding: 0 20px; gap: 0; }
       .article-sidebar { border-top: 2px solid var(--border); padding-top: 32px; }
       .related-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: 1fr; }
       nav { overflow-x: auto; justify-content: flex-start; }
     }
   </style>
@@ -527,7 +505,7 @@
 
   <div class="topbar">
     <a href="index.php">← Iran Observateur</a>
-    &nbsp;·&nbsp; <?= date('l d F Y', strtotime($article['published_at'])) ?> &nbsp;·&nbsp; <?= htmlspecialchars($article['category_name'] ?? 'Article') ?>
+    &nbsp;·&nbsp; <?= $article['published_at'] ? date('l d F Y', strtotime($article['published_at'])) : date('l d F Y') ?> &nbsp;·&nbsp; <?= htmlspecialchars($article['category_name'] ?? 'Article') ?>
   </div>
 
   <header>
@@ -570,185 +548,95 @@
       </h1>
 
       <p class="article-deck">
-        Les délégations américaine, européenne et iranienne se retrouvent à Genève pour tenter de relancer un dialogue suspendu depuis l'automne 2025. L'enrichissement de l'uranium reste la principale pomme de discorde, Téhéran refusant tout plafond inférieur à 60% de pureté.
+        <?= htmlspecialchars(substr(strip_tags($article['content']), 0, 200) . '...') ?>
       </p>
 
       <div class="article-byline">
-        <div class="author-avatar" aria-hidden="true">Rd</div>
+        <div class="author-avatar" aria-hidden="true"><?= strtoupper(substr($article['author_username'] ?? 'Rd', 0, 2)) ?></div>
         <div class="byline-info">
-          <div class="byline-name">La rédaction — Iran Observateur</div>
-          <div class="byline-meta">Publié le 28 mars 2026 · Mis à jour le 29 mars 2026 · 8 min de lecture</div>
-        </div>
-        <div class="share-btns" aria-label="Partager l'article">
-          <button class="share-btn">Partager</button>
-          <button class="share-btn">Copier le lien</button>
+          <div class="byline-name"><?= htmlspecialchars($article['author_username'] ?? 'La rédaction') ?> — Iran Observateur</div>
+          <div class="byline-meta">
+            Publié le <?= $article['published_at'] ? date('d M Y', strtotime($article['published_at'])) : date('d M Y') ?>
+            · Mis à jour le <?= $article['updated_at'] ? date('d M Y', strtotime($article['updated_at'])) : ($article['published_at'] ? date('d M Y', strtotime($article['published_at'])) : date('d M Y')) ?>
+            · <?= intval(strlen(strip_tags($article['content'])) / 200) ?> min
+          </div>
         </div>
       </div>
 
-      <figure class="article-img">
-        <div class="article-img-fill" role="img" aria-label="Table des négociations diplomatiques à Genève sur le dossier iranien, mars 2026">
-          ژنو
+      <?php if (count($articleImages) > 0) { ?>
+      <section class="article-gallery" aria-label="Galerie d'images">
+        <div class="gallery-grid">
+          <?php foreach ($articleImages as $image) { ?>
+          <figure class="gallery-item">
+            <img src="uploads/<?= htmlspecialchars($image['filename']) ?>" alt="<?= htmlspecialchars($image['alt_text']) ?>" loading="lazy">
+          </figure>
+          <?php } ?>
         </div>
-        <figcaption>Table des négociations diplomatiques à Genève, mars 2026. Les délégations se sont réunies au Palais des Nations. / Iran Observateur</figcaption>
-      </figure>
+        <?php if ($articleImages[0]['alt_text']) { ?>
+        <div class="gallery-caption">
+          <?= htmlspecialchars($articleImages[0]['alt_text']) ?> / Iran Observateur
+        </div>
+        <?php } ?>
+      </section>
+      <?php } ?>
 
       <div class="article-body">
-
-        <div class="key-points">
-          <h4>Points clés</h4>
-          <ul>
-            <li>Reprise des négociations à Genève après six mois de suspension</li>
-            <li>L'Iran maintient son droit à l'enrichissement à 60% minimum</li>
-            <li>Les États-Unis conditionnent tout accord à la levée des centrifugeuses avancées</li>
-            <li>L'UE propose un mécanisme de vérification renforcé</li>
-            <li>Prochain round de négociations prévu pour mi-avril</li>
-          </ul>
-        </div>
-
-        <h2>Une reprise fragile des négociations</h2>
-
-        <p>Les délégations américaine, européenne et iranienne se sont retrouvées début mars 2026 à Genève pour tenter de relancer un dialogue diplomatique suspendu depuis l'automne 2025. Cette réunion, préparée discrètement depuis plusieurs semaines, représente la première tentative sérieuse de dialogue direct depuis l'escalade militaire de l'été dernier.</p>
-
-        <p>Selon des sources diplomatiques proches des négociations, l'ambiance au Palais des Nations était «constructive mais tendue». Les délégués ont travaillé sur un document-cadre proposé par les Européens, qui prévoit une réduction progressive de l'enrichissement iranien en échange d'une levée partielle des sanctions économiques.</p>
-
-        <blockquote>
-          <p>« Nous sommes ici pour trouver une solution qui garantisse à la fois la sécurité régionale et les droits légitimes de l'Iran dans le domaine de l'énergie nucléaire civile. »</p>
-          <cite>— Chef de la délégation iranienne, Genève, mars 2026</cite>
-        </blockquote>
-
-        <h2>Les points de blocage persistants</h2>
-
-        <p><strong>L'enrichissement de l'uranium reste la principale pomme de discorde.</strong> L'Iran refuse catégoriquement tout plafond inférieur à 60% de pureté, invoquant sa souveraineté nationale et ses besoins énergétiques. Washington exige de son côté un retour au seuil de 3,67% prévu par le JCPOA de 2015, jugé seul compatible avec une utilisation exclusivement civile.</p>
-
-        <p>La question des centrifugeuses IR-6 constitue un second point de friction majeur. Ces machines de haute performance, développées par l'Iran ces dernières années, permettent un enrichissement dix fois plus rapide que les modèles de première génération. Les États-Unis demandent leur démantèlement complet, ce que Téhéran refuse d'envisager.</p>
-
-        <h3>La proposition européenne</h3>
-
-        <p>L'Union européenne a avancé un compromis innovant : un mécanisme de vérification renforcé piloté conjointement par l'AIEA et une commission tripartite, qui permettrait à l'Iran de maintenir certaines centrifugeuses avancées sous surveillance permanente, contre une réduction du stock d'uranium enrichi à 20%. Cette proposition a reçu un accueil mitigé des deux parties.</p>
-
-        <h2>L'enjeu régional</h2>
-
-        <p>Au-delà du dossier strictement nucléaire, les négociateurs doivent également composer avec les tensions militaires persistantes dans la région. Les frappes de drones qui ont touché plusieurs installations pétrolières du Golfe Persique en janvier dernier continuent de peser lourdement sur le climat diplomatique.</p>
-
-        <p>Israël, qui n'est pas partie prenante aux négociations mais dont les préoccupations sécuritaires sont omniprésentes, suit de près l'évolution des discussions. Tel-Aviv a réitéré ses mises en garde contre tout accord qu'il jugerait insuffisant pour prévenir une éventuelle militarisation du programme nucléaire iranien.</p>
-
-        <h2>Perspectives et prochaines étapes</h2>
-
-        <p>À l'issue de la première semaine de discussions, les parties ont convenu de se retrouver à mi-avril pour un second round de négociations. Un groupe technique d'experts sera constitué d'ici là pour examiner en détail les modalités de vérification et le calendrier de désamorçage.</p>
-
-        <p>Les analystes restent prudents. «Ces négociations sont probablement notre dernière chance de trouver une solution diplomatique avant que la situation ne devienne irréversible», estimait un diplomate européen sous couvert d'anonymat.</p>
-
+        <?= $article['content'] ?>
       </div>
 
+      <?php if (!empty($article['tags'])) { ?>
       <div class="article-tags">
         <span class="tags-label">Tags :</span>
-        <a href="categorie.php" class="tag-pill">Diplomatie</a>
-        <a href="categorie.php" class="tag-pill">Nucléaire</a>
-        <a href="categorie.php" class="tag-pill">Genève</a>
-        <a href="categorie.php" class="tag-pill">États-Unis</a>
-        <a href="categorie.php" class="tag-pill">ONU</a>
-        <a href="categorie.php" class="tag-pill">JCPOA</a>
+        <?php foreach ($article['tags'] as $tag) { ?>
+        <a href="#" class="tag-pill"><?= htmlspecialchars($tag['name']) ?></a>
+        <?php } ?>
       </div>
+      <?php } ?>
 
-      <!-- RELATED -->
+      <?php if (count($relatedArticles) > 0) { ?>
       <section class="related-section" aria-label="Articles liés">
         <h2>À lire aussi</h2>
         <div class="related-grid">
-          <a href="article.php" class="related-card">
-            <div class="related-thumb" style="background: linear-gradient(135deg,#1a3a5c,#0f0e0c)" role="img" aria-label="Illustration article militaire">⚔</div>
+          <?php foreach ($relatedArticles as $related) { ?>
+          <a href="article.php?slug=<?= urlencode($related['slug']) ?>" class="related-card">
+            <div class="related-thumb"><?= strtoupper(substr($related['category_slug'] ?? 'cat', 0, 3)) ?></div>
             <div class="related-info">
-              <div class="rel-cat">Militaire</div>
-              <h3>Les forces en présence : IRGC, armée régulière et milices alliées</h3>
-              <div class="rel-date">27 mars 2026</div>
+              <div class="rel-cat"><?= htmlspecialchars($related['category_name'] ?? 'Article') ?></div>
+              <h3><?= htmlspecialchars($related['title']) ?></h3>
+              <div class="rel-date"><?= $related['published_at'] ? date('d M Y', strtotime($related['published_at'])) : '' ?></div>
             </div>
           </a>
-          <a href="article.php" class="related-card">
-            <div class="related-thumb" style="background: linear-gradient(135deg,#1a2d1a,#0f0e0c)" role="img" aria-label="Illustration article humanitaire">🏥</div>
-            <div class="related-info">
-              <div class="rel-cat">Humanitaire</div>
-              <h3>Situation humanitaire : 2 millions de déplacés en 2025</h3>
-              <div class="rel-date">26 mars 2026</div>
-            </div>
-          </a>
-          <a href="article.php" class="related-card">
-            <div class="related-thumb" style="background: linear-gradient(135deg,#2d1a0e,#0f0e0c)" role="img" aria-label="Illustration article politique">🏛</div>
-            <div class="related-info">
-              <div class="rel-cat">Politique</div>
-              <h3>Chronologie du conflit : les origines de la crise en Iran</h3>
-              <div class="rel-date">24 mars 2026</div>
-            </div>
-          </a>
-          <a href="article.php" class="related-card">
-            <div class="related-thumb" style="background: linear-gradient(135deg,#2d2a1a,#0f0e0c)" role="img" aria-label="Illustration article sanctions">💼</div>
-            <div class="related-info">
-              <div class="rel-cat">Sanctions</div>
-              <h3>L'économie iranienne sous pression : bilan des sanctions 2025</h3>
-              <div class="rel-date">22 mars 2026</div>
-            </div>
-          </a>
+          <?php } ?>
         </div>
       </section>
+      <?php } ?>
 
     </article>
 
     <!-- SIDEBAR -->
     <aside class="article-sidebar" aria-label="Informations complémentaires">
 
-      <div class="sidebar-widget">
-        <h3>Chiffres clés</h3>
-        <div class="facts-box">
-          <h4>Le dossier nucléaire iranien</h4>
-          <ul>
-            <li><span>Enrichissement actuel</span><strong>60%</strong></li>
-            <li><span>Stock d'uranium (kg)</span><strong>~4 800</strong></li>
-            <li><span>Centrifugeuses actives</span><strong>+9 000</strong></li>
-            <li><span>Accords suspendus</span><strong>JCPOA 2015</strong></li>
-            <li><span>Inspection AIEA</span><strong>Limitée</strong></li>
-          </ul>
-        </div>
-      </div>
-
+      <?php if (count($recentArticles) > 0) { ?>
       <div class="sidebar-widget">
         <h3>Derniers articles</h3>
-        <ul style="list-style:none">
-          <li style="padding: 12px 0; border-bottom: 1px solid var(--border)">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:4px">Militaire</div>
-            <a href="article.php" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Frappes de drones dans le nord-ouest de l'Iran</a>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">29 mars 2026</div>
-          </li>
-          <li style="padding: 12px 0; border-bottom: 1px solid var(--border)">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:4px">Politique</div>
-            <a href="article.php" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Le régime iranien face à la pression interne</a>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">28 mars 2026</div>
-          </li>
-          <li style="padding: 12px 0">
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:4px">Humanitaire</div>
-            <a href="article.php" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Témoignages de terrain — ONG en Iran</a>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">27 mars 2026</div>
-          </li>
-        </ul>
+        <?php foreach ($recentArticles as $recent) { ?>
+        <a href="article.php?slug=<?= urlencode($recent['slug']) ?>" class="sidebar-article-link">
+          <div class="sidebar-cat"><?= htmlspecialchars($recent['category_name'] ?? 'Article') ?></div>
+          <div class="sidebar-title"><?= htmlspecialchars($recent['title']) ?></div>
+          <div class="sidebar-date"><?= $recent['published_at'] ? date('d M Y', strtotime($recent['published_at'])) : '' ?></div>
+        </a>
+        <?php } ?>
       </div>
+      <?php } ?>
 
       <div class="sidebar-widget">
         <h3>Catégories</h3>
-        <ul style="list-style:none">
-          <li style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Politique</a>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">12</span>
-          </li>
-          <li style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Militaire</a>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">18</span>
-          </li>
-          <li style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Humanitaire</a>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">14</span>
-          </li>
-          <li style="padding:8px 0;display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Diplomatie</a>
-            <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">9</span>
-          </li>
-        </ul>
+        <?php foreach ($categories as $cat) { ?>
+        <a href="categorie.php?slug=<?= urlencode($cat['slug']) ?>" class="sidebar-cat-link">
+          <span><?= htmlspecialchars($cat['name']) ?></span>
+          <span class="sidebar-cat-count"><?= $cat['article_count'] ?? 0 ?></span>
+        </a>
+        <?php } ?>
       </div>
 
     </aside>
@@ -759,9 +647,8 @@
       <div class="brand">Iran <span>Observateur</span></div>
       <nav aria-label="Navigation pied de page">
         <a href="index.php">Accueil</a>
-        <a href="categorie.php">Articles</a>
+        <a href="categorie.php?slug=diplomatie">Articles</a>
         <a href="a-propos.php">À propos</a>
-        <a href="#">Contact</a>
       </nav>
     </div>
     <div class="footer-copyright">© 2026 Iran Observateur — Mini-projet Web Design</div>
@@ -777,4 +664,4 @@
   </script>
 
 </body>
-</php>
+</html>

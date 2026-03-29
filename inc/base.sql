@@ -196,18 +196,18 @@ INSERT INTO articles (user_id, category_id, title, slug, content, meta_title, me
 
 -- Liaison articles <-> tags
 INSERT INTO article_tags (article_id, tag_id) VALUES
-(6, 3), (6, 4), (6, 5),
-(7, 1), (7, 6),
-(8, 2), (8, 8),
-(9, 2), (9, 3), (9, 5);
+(1, 3), (1, 4), (1, 5),
+(2, 1), 
+(3, 2), (3, 3),
+(4, 2), (4, 3), (4, 5);
 
 -- Médias (images des articles)
 INSERT INTO medias (article_id, filename, alt_text, mime_type) VALUES
-(6, 'carte-iran-conflit.jpg',      'Carte du conflit en Iran et dans la région du Golfe Persique', 'image/jpeg'),
-(7, 'soldats-irgc.jpg',            'Soldats du Corps des gardiens de la révolution islamique en exercice', 'image/jpeg'),
-(8, 'camp-refugies-iran.jpg',      'Camp de réfugiés iraniens à la frontière irakienne en 2025', 'image/jpeg'),
-(8, 'aide-humanitaire-ong.jpg',    'Distribution de vivres par une ONG dans une zone de conflit', 'image/jpeg'),
-(9, 'negociations-geneve.jpg',     'Table des négociations diplomatiques à Genève sur le dossier iranien', 'image/jpeg');
+(1, 'carte-iran-conflit.jpg',      'Carte du conflit en Iran et dans la région du Golfe Persique', 'image/jpeg'),
+(2, 'soldats-irgc.jpg',            'Soldats du Corps des gardiens de la révolution islamique en exercice', 'image/jpeg'),
+(3, 'camp-refugies-iran.jpg',      'Camp de réfugiés iraniens à la frontière irakienne en 2025', 'image/jpeg'),
+(3, 'aide-humanitaire-ong.jpg',    'Distribution de vivres par une ONG dans une zone de conflit', 'image/jpeg'),
+(4, 'negociations-geneve.jpg',     'Table des négociations diplomatiques à Genève sur le dossier iranien', 'image/jpeg');
 
 -- ============================================================
 -- Vérification rapide
