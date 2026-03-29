@@ -520,7 +520,7 @@
 <body>
 
   <div class="topbar">
-    <a href="index.html">← Iran Observateur</a>
+    <a href="index.php">← Iran Observateur</a>
     &nbsp;·&nbsp; À propos de la rédaction
   </div>
 
@@ -528,22 +528,22 @@
     <div class="header-top">
       <div class="site-date"><div>Vol. XII — N°88</div></div>
       <div class="site-title">
-        <a href="index.html"><h1>Iran <span>Observateur</span></h1></a>
+        <a href="index.php"><h1>Iran <span>Observateur</span></h1></a>
       </div>
       <div style="width:100px"></div>
     </div>
     <nav aria-label="Navigation principale">
-      <a href="index.html">Accueil</a>
-      <a href="categorie.html">Politique</a>
-      <a href="categorie.html">Militaire</a>
-      <a href="categorie.html">Humanitaire</a>
-      <a href="categorie.html">Diplomatie</a>
-      <a href="a-propos.html" class="active">À propos</a>
+      <a href="index.php">Accueil</a>
+      <a href="categorie.php">Politique</a>
+      <a href="categorie.php">Militaire</a>
+      <a href="categorie.php">Humanitaire</a>
+      <a href="categorie.php">Diplomatie</a>
+      <a href="a-propos.php" class="active">À propos</a>
     </nav>
   </header>
 
   <nav class="breadcrumb" aria-label="Fil d'Ariane">
-    <a href="index.html">Accueil</a>
+    <a href="index.php">Accueil</a>
     <span>/</span>
     <span>À propos</span>
   </nav>
@@ -757,9 +757,9 @@
     <div class="footer-inner">
       <div class="brand">Iran <span>Observateur</span></div>
       <nav aria-label="Navigation pied de page">
-        <a href="index.html">Accueil</a>
-        <a href="categorie.html">Articles</a>
-        <a href="a-propos.html">À propos</a>
+        <a href="index.php">Accueil</a>
+        <a href="categorie.php">Articles</a>
+        <a href="a-propos.php">À propos</a>
         <a href="#">Contact</a>
       </nav>
     </div>
@@ -784,4 +784,4 @@
   </script>
 
 </body>
-</html>
+</php>

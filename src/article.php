@@ -507,7 +507,7 @@
   <div class="reading-progress" id="progress" role="progressbar" aria-label="Progression de lecture"></div>
 
   <div class="topbar">
-    <a href="index.html">← Iran Observateur</a>
+    <a href="index.php">← Iran Observateur</a>
     &nbsp;·&nbsp; Dimanche 29 mars 2026 &nbsp;·&nbsp; Diplomatie
   </div>
 
@@ -517,24 +517,24 @@
         <div>Vol. XII — N°88</div>
       </div>
       <div class="site-title">
-        <a href="index.html"><h1>Iran <span>Observateur</span></h1></a>
+        <a href="index.php"><h1>Iran <span>Observateur</span></h1></a>
       </div>
       <div style="width: 100px;"></div>
     </div>
     <nav aria-label="Navigation principale">
-      <a href="index.html">Accueil</a>
-      <a href="categorie.html">Politique</a>
-      <a href="categorie.html">Militaire</a>
-      <a href="categorie.html">Humanitaire</a>
-      <a href="categorie.html">Diplomatie</a>
-      <a href="a-propos.html">À propos</a>
+      <a href="index.php">Accueil</a>
+      <a href="categorie.php">Politique</a>
+      <a href="categorie.php">Militaire</a>
+      <a href="categorie.php">Humanitaire</a>
+      <a href="categorie.php">Diplomatie</a>
+      <a href="a-propos.php">À propos</a>
     </nav>
   </header>
 
   <nav class="breadcrumb" aria-label="Fil d'Ariane">
-    <a href="index.html">Accueil</a>
+    <a href="index.php">Accueil</a>
     <span>/</span>
-    <a href="categorie.html">Diplomatie</a>
+    <a href="categorie.php">Diplomatie</a>
     <span>/</span>
     <span>Négociations à Genève</span>
   </nav>
@@ -622,19 +622,19 @@
 
       <div class="article-tags">
         <span class="tags-label">Tags :</span>
-        <a href="categorie.html" class="tag-pill">Diplomatie</a>
-        <a href="categorie.html" class="tag-pill">Nucléaire</a>
-        <a href="categorie.html" class="tag-pill">Genève</a>
-        <a href="categorie.html" class="tag-pill">États-Unis</a>
-        <a href="categorie.html" class="tag-pill">ONU</a>
-        <a href="categorie.html" class="tag-pill">JCPOA</a>
+        <a href="categorie.php" class="tag-pill">Diplomatie</a>
+        <a href="categorie.php" class="tag-pill">Nucléaire</a>
+        <a href="categorie.php" class="tag-pill">Genève</a>
+        <a href="categorie.php" class="tag-pill">États-Unis</a>
+        <a href="categorie.php" class="tag-pill">ONU</a>
+        <a href="categorie.php" class="tag-pill">JCPOA</a>
       </div>
 
       <!-- RELATED -->
       <section class="related-section" aria-label="Articles liés">
         <h2>À lire aussi</h2>
         <div class="related-grid">
-          <a href="article.html" class="related-card">
+          <a href="article.php" class="related-card">
             <div class="related-thumb" style="background: linear-gradient(135deg,#1a3a5c,#0f0e0c)" role="img" aria-label="Illustration article militaire">⚔</div>
             <div class="related-info">
               <div class="rel-cat">Militaire</div>
@@ -642,7 +642,7 @@
               <div class="rel-date">27 mars 2026</div>
             </div>
           </a>
-          <a href="article.html" class="related-card">
+          <a href="article.php" class="related-card">
             <div class="related-thumb" style="background: linear-gradient(135deg,#1a2d1a,#0f0e0c)" role="img" aria-label="Illustration article humanitaire">🏥</div>
             <div class="related-info">
               <div class="rel-cat">Humanitaire</div>
@@ -650,7 +650,7 @@
               <div class="rel-date">26 mars 2026</div>
             </div>
           </a>
-          <a href="article.html" class="related-card">
+          <a href="article.php" class="related-card">
             <div class="related-thumb" style="background: linear-gradient(135deg,#2d1a0e,#0f0e0c)" role="img" aria-label="Illustration article politique">🏛</div>
             <div class="related-info">
               <div class="rel-cat">Politique</div>
@@ -658,7 +658,7 @@
               <div class="rel-date">24 mars 2026</div>
             </div>
           </a>
-          <a href="article.html" class="related-card">
+          <a href="article.php" class="related-card">
             <div class="related-thumb" style="background: linear-gradient(135deg,#2d2a1a,#0f0e0c)" role="img" aria-label="Illustration article sanctions">💼</div>
             <div class="related-info">
               <div class="rel-cat">Sanctions</div>
@@ -693,17 +693,17 @@
         <ul style="list-style:none">
           <li style="padding: 12px 0; border-bottom: 1px solid var(--border)">
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:4px">Militaire</div>
-            <a href="article.html" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Frappes de drones dans le nord-ouest de l'Iran</a>
+            <a href="article.php" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Frappes de drones dans le nord-ouest de l'Iran</a>
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">29 mars 2026</div>
           </li>
           <li style="padding: 12px 0; border-bottom: 1px solid var(--border)">
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:4px">Politique</div>
-            <a href="article.html" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Le régime iranien face à la pression interne</a>
+            <a href="article.php" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Le régime iranien face à la pression interne</a>
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">28 mars 2026</div>
           </li>
           <li style="padding: 12px 0">
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);text-transform:uppercase;margin-bottom:4px">Humanitaire</div>
-            <a href="article.html" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Témoignages de terrain — ONG en Iran</a>
+            <a href="article.php" style="font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.3;display:block">Témoignages de terrain — ONG en Iran</a>
             <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:4px">27 mars 2026</div>
           </li>
         </ul>
@@ -713,19 +713,19 @@
         <h3>Catégories</h3>
         <ul style="list-style:none">
           <li style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.html" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Politique</a>
+            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Politique</a>
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">12</span>
           </li>
           <li style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.html" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Militaire</a>
+            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Militaire</a>
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">18</span>
           </li>
           <li style="padding:8px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.html" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Humanitaire</a>
+            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Humanitaire</a>
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">14</span>
           </li>
           <li style="padding:8px 0;display:flex;justify-content:space-between;align-items:center">
-            <a href="categorie.html" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Diplomatie</a>
+            <a href="categorie.php" style="font-family:'Source Serif 4',serif;font-size:14px;color:var(--ink);text-decoration:none">Diplomatie</a>
             <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)">9</span>
           </li>
         </ul>
@@ -738,9 +738,9 @@
     <div class="footer-inner">
       <div class="brand">Iran <span>Observateur</span></div>
       <nav aria-label="Navigation pied de page">
-        <a href="index.html">Accueil</a>
-        <a href="categorie.html">Articles</a>
-        <a href="a-propos.html">À propos</a>
+        <a href="index.php">Accueil</a>
+        <a href="categorie.php">Articles</a>
+        <a href="a-propos.php">À propos</a>
         <a href="#">Contact</a>
       </nav>
     </div>
@@ -757,4 +757,4 @@
   </script>
 
 </body>
-</html>
+</php>

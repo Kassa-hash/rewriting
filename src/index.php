@@ -1,6 +1,3 @@
-<?php
-include 'bdconnection.php';
-?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -595,7 +592,7 @@ include 'bdconnection.php';
 
   <div class="topbar">
     <span>Dimanche 29 mars 2026</span> &nbsp;·&nbsp;
-    <a href="article.html">Dernière heure : Négociations à Genève — nouvelles propositions sur le nucléaire</a>
+    <a href="article.php">Dernière heure : Négociations à Genève — nouvelles propositions sur le nucléaire</a>
   </div>
 
   <header>
@@ -613,12 +610,12 @@ include 'bdconnection.php';
       </div>
     </div>
     <nav aria-label="Navigation principale">
-      <a href="index.html" class="active">Accueil</a>
-      <a href="categorie.html">Politique</a>
-      <a href="categorie.html">Militaire</a>
-      <a href="categorie.html">Humanitaire</a>
-      <a href="categorie.html">Diplomatie</a>
-      <a href="a-propos.html">À propos</a>
+      <a href="index.php" class="active">Accueil</a>
+      <a href="categorie.php">Politique</a>
+      <a href="categorie.php">Militaire</a>
+      <a href="categorie.php">Humanitaire</a>
+      <a href="categorie.php">Diplomatie</a>
+      <a href="a-propos.php">À propos</a>
     </nav>
   </header>
 
@@ -655,7 +652,8 @@ include 'bdconnection.php';
           <span>28 mars 2026</span>
           <span>8 min de lecture</span>
         </div>
-        <a href="article.html" class="read-more">Lire l'article complet</a>
+        <a href="article.php
+        " class="read-more">Lire l'article complet</a>
       </div>
 
       <aside class="hero-sidebar" aria-label="Articles récents">
@@ -663,22 +661,26 @@ include 'bdconnection.php';
         <ul class="sidebar-articles">
           <li>
             <div class="art-cat">Militaire</div>
-            <h3><a href="article.html">Les forces en présence : IRGC, armée régulière et milices alliées</a></h3>
+            <h3><a href="article.php
+            ">Les forces en présence : IRGC, armée régulière et milices alliées</a></h3>
             <div class="art-date">27 mars 2026</div>
           </li>
           <li>
             <div class="art-cat">Humanitaire</div>
-            <h3><a href="article.html">Situation humanitaire : 2 millions de déplacés en 2025</a></h3>
+            <h3><a href="article.php
+            ">Situation humanitaire : 2 millions de déplacés en 2025</a></h3>
             <div class="art-date">26 mars 2026</div>
           </li>
           <li>
             <div class="art-cat">Politique</div>
-            <h3><a href="article.html">Chronologie du conflit : les origines de la crise en Iran</a></h3>
+            <h3><a href="article.php
+            ">Chronologie du conflit : les origines de la crise en Iran</a></h3>
             <div class="art-date">24 mars 2026</div>
           </li>
           <li>
             <div class="art-cat">Sanctions</div>
-            <h3><a href="article.html">L'économie iranienne sous pression : bilan des sanctions 2025</a></h3>
+            <h3><a href="article.php
+            ">L'économie iranienne sous pression : bilan des sanctions 2025</a></h3>
             <div class="art-date">22 mars 2026</div>
           </li>
         </ul>
@@ -690,7 +692,8 @@ include 'bdconnection.php';
       <div class="section-header">
         <h2>Dernières analyses</h2>
         <span class="section-line"></span>
-        <a href="categorie.html">Voir tout →</a>
+        <a href="categorie.php
+        ">Voir tout →</a>
       </div>
       <div class="articles-grid">
         <article class="article-card fade-in">
@@ -698,7 +701,8 @@ include 'bdconnection.php';
             <div class="card-img-fill pol" role="img" aria-label="Illustration politique — Téhéran, Iran">Pol</div>
           </div>
           <div class="card-cat">Politique</div>
-          <h3><a href="article.html">Le régime iranien face à la pression interne et internationale</a></h3>
+          <h3><a href="article.php
+          ">Le régime iranien face à la pression interne et internationale</a></h3>
           <p class="card-excerpt">La double contrainte d'une opposition intérieure grandissante et des pressions diplomatiques extérieures fragilise le gouvernement de Téhéran.</p>
           <div class="card-meta">
             <span>25 mars 2026</span>
@@ -711,7 +715,8 @@ include 'bdconnection.php';
             <div class="card-img-fill mil" role="img" aria-label="Illustration militaire — Forces armées iraniennes">Mil</div>
           </div>
           <div class="card-cat">Militaire</div>
-          <h3><a href="article.html">Frappes de drones : une nouvelle doctrine de guerre dans le Golfe</a></h3>
+          <h3><a href="article.php
+          ">Frappes de drones : une nouvelle doctrine de guerre dans le Golfe</a></h3>
           <p class="card-excerpt">L'utilisation massive de drones kamikaze redéfinit les règles d'engagement dans la région et oblige les puissances à revoir leurs défenses.</p>
           <div class="card-meta">
             <span>23 mars 2026</span>
@@ -724,7 +729,8 @@ include 'bdconnection.php';
             <div class="card-img-fill hum" role="img" aria-label="Illustration humanitaire — Aide aux civils iraniens">Hum</div>
           </div>
           <div class="card-cat">Humanitaire</div>
-          <h3><a href="article.html">L'accès humanitaire entravé : témoignages de terrain des ONG</a></h3>
+          <h3><a href="article.php
+          ">L'accès humanitaire entravé : témoignages de terrain des ONG</a></h3>
           <p class="card-excerpt">Médecins Sans Frontières et le CICR dénoncent des restrictions d'accès sans précédent dans les zones de conflit en Iran.</p>
           <div class="card-meta">
             <span>21 mars 2026</span>
@@ -739,25 +745,29 @@ include 'bdconnection.php';
     <section class="categories-strip" aria-label="Explorer par thématique">
       <h2>Explorer par thématique</h2>
       <div class="cat-grid">
-        <a href="categorie.html" class="cat-card">
+        <a href="categorie.php
+        " class="cat-card">
           <span class="cat-icon">🏛</span>
           <h3>Politique</h3>
           <p>Gouvernance, régime, opposition et dynamiques de pouvoir</p>
           <div class="cat-count">12 articles</div>
         </a>
-        <a href="categorie.html" class="cat-card">
+        <a href="categorie.php
+        " class="cat-card">
           <span class="cat-icon">⚔</span>
           <h3>Militaire</h3>
           <p>Opérations, forces armées, drones et frappes aériennes</p>
           <div class="cat-count">18 articles</div>
         </a>
-        <a href="categorie.html" class="cat-card">
+        <a href="categorie.php
+        " class="cat-card">
           <span class="cat-icon">🤝</span>
           <h3>Diplomatie</h3>
           <p>Négociations, sanctions, accords et relations internationales</p>
           <div class="cat-count">9 articles</div>
         </a>
-        <a href="categorie.html" class="cat-card">
+        <a href="categorie.php
+        " class="cat-card">
           <span class="cat-icon">🏥</span>
           <h3>Humanitaire</h3>
           <p>Civils, réfugiés, aide internationale et droits humains</p>
@@ -788,17 +798,23 @@ include 'bdconnection.php';
       <div class="footer-col">
         <h4>Rubriques</h4>
         <ul>
-          <li><a href="categorie.html">Politique</a></li>
-          <li><a href="categorie.html">Militaire</a></li>
-          <li><a href="categorie.html">Humanitaire</a></li>
-          <li><a href="categorie.html">Diplomatie</a></li>
-          <li><a href="categorie.html">Sanctions</a></li>
+          <li><a href="categorie.php
+          ">Politique</a></li>
+          <li><a href="categorie.php
+          ">Militaire</a></li>
+          <li><a href="categorie.php
+          ">Humanitaire</a></li>
+          <li><a href="categorie.php
+          ">Diplomatie</a></li>
+          <li><a href="categorie.php
+          ">Sanctions</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Site</h4>
         <ul>
-          <li><a href="a-propos.html">À propos</a></li>
+          <li><a href="a-propos.php
+          ">À propos</a></li>
           <li><a href="#">Mentions légales</a></li>
           <li><a href="#">Politique de confidentialité</a></li>
           <li><a href="#">Contact</a></li>
@@ -820,4 +836,5 @@ include 'bdconnection.php';
   </footer>
 
 </body>
-</html>
+</php
+>

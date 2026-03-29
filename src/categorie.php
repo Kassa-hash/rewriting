@@ -522,7 +522,7 @@
 <body>
 
   <div class="topbar">
-    <a href="index.html">← Iran Observateur</a>
+    <a href="index.php">← Iran Observateur</a>
     &nbsp;·&nbsp; Catégorie : Diplomatie &nbsp;·&nbsp; 9 articles
   </div>
 
@@ -530,22 +530,22 @@
     <div class="header-top">
       <div class="site-date"><div>Vol. XII — N°88</div></div>
       <div class="site-title">
-        <a href="index.html"><h1>Iran <span>Observateur</span></h1></a>
+        <a href="index.php"><h1>Iran <span>Observateur</span></h1></a>
       </div>
       <div style="width:100px"></div>
     </div>
     <nav aria-label="Navigation principale">
-      <a href="index.html">Accueil</a>
-      <a href="categorie.html">Politique</a>
-      <a href="categorie.html">Militaire</a>
-      <a href="categorie.html">Humanitaire</a>
-      <a href="categorie.html" class="active">Diplomatie</a>
-      <a href="a-propos.html">À propos</a>
+      <a href="index.php">Accueil</a>
+      <a href="categorie.php">Politique</a>
+      <a href="categorie.php">Militaire</a>
+      <a href="categorie.php">Humanitaire</a>
+      <a href="categorie.php" class="active">Diplomatie</a>
+      <a href="a-propos.php">À propos</a>
     </nav>
   </header>
 
   <nav class="breadcrumb" aria-label="Fil d'Ariane">
-    <a href="index.html">Accueil</a>
+    <a href="index.php">Accueil</a>
     <span>/</span>
     <span>Diplomatie</span>
   </nav>
@@ -574,12 +574,12 @@
 
   <div class="subcats">
     <div class="subcats-inner">
-      <a href="categorie.html" class="active">Tout</a>
-      <a href="categorie.html">Nucléaire</a>
-      <a href="categorie.html">Sanctions</a>
-      <a href="categorie.html">ONU</a>
-      <a href="categorie.html">Relations bilatérales</a>
-      <a href="categorie.html">Accords</a>
+      <a href="categorie.php" class="active">Tout</a>
+      <a href="categorie.php">Nucléaire</a>
+      <a href="categorie.php">Sanctions</a>
+      <a href="categorie.php">ONU</a>
+      <a href="categorie.php">Relations bilatérales</a>
+      <a href="categorie.php">Accords</a>
     </div>
   </div>
 
@@ -606,7 +606,7 @@
         <div class="article-featured-img" role="img" aria-label="Table des négociations à Genève sur le dossier iranien">ژنو</div>
         <div class="featured-content">
           <span class="featured-badge">À la une</span>
-          <h2><a href="article.html">Négociations à Genève : l'impasse nucléaire au cœur des pourparlers de mars 2026</a></h2>
+          <h2><a href="article.php">Négociations à Genève : l'impasse nucléaire au cœur des pourparlers de mars 2026</a></h2>
           <p>Les délégations américaine, européenne et iranienne se retrouvent à Genève pour tenter de relancer un dialogue suspendu depuis l'automne 2025.</p>
           <div class="featured-meta">
             <span>28 mars 2026</span>
@@ -620,7 +620,7 @@
 
       <!-- ARTICLE LIST -->
       <div class="articles-list" id="article-list">
-        <a href="article.html" class="article-row" data-type="analyse">
+        <a href="article.php" class="article-row" data-type="analyse">
           <div class="row-thumb" style="background:linear-gradient(135deg,#2d2a1a,#0f0e0c)" role="img" aria-label="Illustration sanctions économiques iraniennes">💼</div>
           <div class="row-content">
             <div class="row-cat">Sanctions</div>
@@ -629,7 +629,7 @@
             <div class="row-meta"><span>22 mars 2026</span><span>·</span><span>6 min</span><span>·</span><span>Analyse</span></div>
           </div>
         </a>
-        <a href="article.html" class="article-row" data-type="reportage">
+        <a href="article.php" class="article-row" data-type="reportage">
           <div class="row-thumb" style="background:linear-gradient(135deg,#1a3a5c,#0f0e0c)" role="img" aria-label="Illustration ONU et dossier iranien">🏛</div>
           <div class="row-content">
             <div class="row-cat">ONU</div>
@@ -638,7 +638,7 @@
             <div class="row-meta"><span>18 mars 2026</span><span>·</span><span>5 min</span><span>·</span><span>Reportage</span></div>
           </div>
         </a>
-        <a href="article.html" class="article-row" data-type="decryptage">
+        <a href="article.php" class="article-row" data-type="decryptage">
           <div class="row-thumb" style="background:linear-gradient(135deg,#1a2d1a,#0f0e0c)" role="img" aria-label="Illustration JCPOA et accord nucléaire iranien">📋</div>
           <div class="row-content">
             <div class="row-cat">Nucléaire</div>
@@ -647,7 +647,7 @@
             <div class="row-meta"><span>15 mars 2026</span><span>·</span><span>9 min</span><span>·</span><span>Décryptage</span></div>
           </div>
         </a>
-        <a href="article.html" class="article-row" data-type="analyse">
+        <a href="article.php" class="article-row" data-type="analyse">
           <div class="row-thumb" style="background:linear-gradient(135deg,#2d1a0e,#0f0e0c)" role="img" aria-label="Illustration relations Iran-Russie">🤝</div>
           <div class="row-content">
             <div class="row-cat">Relations bilatérales</div>
@@ -656,7 +656,7 @@
             <div class="row-meta"><span>10 mars 2026</span><span>·</span><span>7 min</span><span>·</span><span>Analyse</span></div>
           </div>
         </a>
-        <a href="article.html" class="article-row" data-type="reportage">
+        <a href="article.php" class="article-row" data-type="reportage">
           <div class="row-thumb" style="background:linear-gradient(135deg,#1a3a5c,#0f0e0c)" role="img" aria-label="Illustration Turquie Iran et diplomatie régionale">🌐</div>
           <div class="row-content">
             <div class="row-cat">Relations bilatérales</div>
@@ -665,7 +665,7 @@
             <div class="row-meta"><span>5 mars 2026</span><span>·</span><span>5 min</span><span>·</span><span>Reportage</span></div>
           </div>
         </a>
-        <a href="article.html" class="article-row" data-type="decryptage">
+        <a href="article.php" class="article-row" data-type="decryptage">
           <div class="row-thumb" style="background:linear-gradient(135deg,#1a2a1a,#0f0e0c)" role="img" aria-label="Illustration pétrole iranien et sanctions">⛽</div>
           <div class="row-content">
             <div class="row-cat">Sanctions</div>
@@ -691,13 +691,13 @@
       <div class="sidebar-widget">
         <h3>Toutes les catégories</h3>
         <ul class="cat-list">
-          <li><a href="categorie.html">Politique</a><span class="count">12</span></li>
-          <li><a href="categorie.html">Militaire</a><span class="count">18</span></li>
-          <li><a href="categorie.html">Humanitaire</a><span class="count">14</span></li>
-          <li><a href="categorie.html" style="color:var(--accent)">Diplomatie</a><span class="count">9</span></li>
-          <li><a href="categorie.html">Sanctions</a><span class="count">7</span></li>
-          <li><a href="categorie.html">Frappes aériennes</a><span class="count">11</span></li>
-          <li><a href="categorie.html">Réfugiés</a><span class="count">8</span></li>
+          <li><a href="categorie.php">Politique</a><span class="count">12</span></li>
+          <li><a href="categorie.php">Militaire</a><span class="count">18</span></li>
+          <li><a href="categorie.php">Humanitaire</a><span class="count">14</span></li>
+          <li><a href="categorie.php" style="color:var(--accent)">Diplomatie</a><span class="count">9</span></li>
+          <li><a href="categorie.php">Sanctions</a><span class="count">7</span></li>
+          <li><a href="categorie.php">Frappes aériennes</a><span class="count">11</span></li>
+          <li><a href="categorie.php">Réfugiés</a><span class="count">8</span></li>
         </ul>
       </div>
 
@@ -750,9 +750,9 @@
     <div class="footer-inner">
       <div class="brand">Iran <span>Observateur</span></div>
       <nav aria-label="Navigation pied de page">
-        <a href="index.html">Accueil</a>
-        <a href="categorie.html">Articles</a>
-        <a href="a-propos.html">À propos</a>
+        <a href="index.php">Accueil</a>
+        <a href="categorie.php">Articles</a>
+        <a href="a-propos.php">À propos</a>
         <a href="#">Contact</a>
       </nav>
     </div>
@@ -775,4 +775,4 @@
   </script>
 
 </body>
-</html>
+</php>
