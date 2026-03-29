@@ -128,10 +128,10 @@ FOR EACH ROW EXECUTE FUNCTION update_updated_at();
 -- Compte admin par défaut (mot de passe : admin)
 INSERT INTO users (username, email, password_hash, role) VALUES
 ('admin', 'admin@iran-info.local',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ 'admin',
  'admin'),
 ('editeur1', 'editeur@iran-info.local',
- '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+ 'editeur',
  'editor');
 
 -- Catégories (avec hiérarchie)
@@ -196,18 +196,18 @@ INSERT INTO articles (user_id, category_id, title, slug, content, meta_title, me
 
 -- Liaison articles <-> tags
 INSERT INTO article_tags (article_id, tag_id) VALUES
-(1, 3), (1, 4), (1, 5),
-(2, 1), (2, 6),
-(3, 2), (3, 8),
-(4, 2), (4, 3), (4, 5);
+(6, 3), (6, 4), (6, 5),
+(7, 1), (7, 6),
+(8, 2), (8, 8),
+(9, 2), (9, 3), (9, 5);
 
 -- Médias (images des articles)
 INSERT INTO medias (article_id, filename, alt_text, mime_type) VALUES
-(1, 'carte-iran-conflit.jpg',      'Carte du conflit en Iran et dans la région du Golfe Persique', 'image/jpeg'),
-(2, 'soldats-irgc.jpg',            'Soldats du Corps des gardiens de la révolution islamique en exercice', 'image/jpeg'),
-(3, 'camp-refugies-iran.jpg',      'Camp de réfugiés iraniens à la frontière irakienne en 2025', 'image/jpeg'),
-(3, 'aide-humanitaire-ong.jpg',    'Distribution de vivres par une ONG dans une zone de conflit', 'image/jpeg'),
-(4, 'negociations-geneve.jpg',     'Table des négociations diplomatiques à Genève sur le dossier iranien', 'image/jpeg');
+(6, 'carte-iran-conflit.jpg',      'Carte du conflit en Iran et dans la région du Golfe Persique', 'image/jpeg'),
+(7, 'soldats-irgc.jpg',            'Soldats du Corps des gardiens de la révolution islamique en exercice', 'image/jpeg'),
+(8, 'camp-refugies-iran.jpg',      'Camp de réfugiés iraniens à la frontière irakienne en 2025', 'image/jpeg'),
+(8, 'aide-humanitaire-ong.jpg',    'Distribution de vivres par une ONG dans une zone de conflit', 'image/jpeg'),
+(9, 'negociations-geneve.jpg',     'Table des négociations diplomatiques à Genève sur le dossier iranien', 'image/jpeg');
 
 -- ============================================================
 -- Vérification rapide
