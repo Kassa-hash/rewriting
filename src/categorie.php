@@ -483,6 +483,7 @@ $allCategories = getAllCategories(false);
             © 2026 Iran Observateur — Mini-projet Web Design — Tous droits réservés
         </div>
     </footer>
+    <script src="/lazy-load.js"></script>
 
 </body>
 

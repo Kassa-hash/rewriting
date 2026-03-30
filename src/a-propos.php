@@ -782,6 +782,7 @@
       }
     }
   </script>
+  <script src="/lazy-load.js"></script>
 
 </body>
-</php>
+</html>

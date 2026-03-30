@@ -617,7 +617,8 @@
         <p class="site-tagline">Analyses · Reportages · Décryptages</p>
       </div>
       <div class="header-actions">
-        <button class="btn-search">⌕ Rechercher</button>
+        <a href="login"><button class="btn-search">Se connecter</button></a>
+        
       </div>
     </div>
     <nav aria-label="Navigation principale">
@@ -775,6 +776,7 @@
       <span>Tous droits réservés</span>
     </div>
   </footer>
+  <script src="/lazy-load.js"></script>
 
 </body>
 </html>
