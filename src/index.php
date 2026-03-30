@@ -645,7 +645,7 @@
       <div class="hero-main">
         <div class="hero-img-placeholder" role="img" aria-label="<?= htmlspecialchars($heroArticle['meta_description'] ?? 'Actualités') ?>">
             <?php if ($heroArticle && $heroArticle['media_filename']): ?>
-                <img style="width: 100%; height: 100%; object-fit: cover;" src="uploads/<?= htmlspecialchars($heroArticle['media_filename']) ?>" alt="<?= htmlspecialchars($heroArticle['media_alt_text'] ?? $heroArticle['title']) ?>">
+                <img style="width: 100%; height: 100%; object-fit: cover;" src="/uploads/<?= htmlspecialchars($heroArticle['media_filename']) ?>" alt="<?= htmlspecialchars($heroArticle['media_alt_text'] ?? $heroArticle['title']) ?>">
             <?php else: ?>
                 ایران
             <?php endif; ?>
@@ -690,7 +690,7 @@
         <article class="article-card fade-in">
           <div class="card-img">
             <?php if ($article['media_filename']) { ?>
-              <img src="uploads/<?= htmlspecialchars($article['media_filename']) ?>" alt="<?= htmlspecialchars($article['media_alt_text'] ?? $article['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+              <img src="/uploads/<?= htmlspecialchars($article['media_filename']) ?>" alt="<?= htmlspecialchars($article['media_alt_text'] ?? $article['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
             <?php } else { ?>
               <div class="card-img-fill <?= $abbrev ?>" role="img" aria-label="<?= htmlspecialchars($article['category_name'] ?? 'Article') ?>"><?= $abbrev ?></div>
             <?php } ?>
