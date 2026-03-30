@@ -1,4 +1,77 @@
-# Réécriture d'URL pour Iran Observateur
+# ============================================================
+# OPTIMISATION PERFORMANCE
+# ============================================================
+
+# Compression GZIP
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/plain text/html text/xml
+	AddOutputFilterByType DEFLATE text/css
+	AddOutputFilterByType DEFLATE application/xml application/xhtml+xml
+	AddOutputFilterByType DEFLATE application/rss+xml
+	AddOutputFilterByType DEFLATE text/javascript application/javascript application/x-javascript
+	AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# Cache Headers
+<IfModule mod_expires.c>
+	ExpiresActive On
+	
+	# Images - 1 mois
+	ExpiresByType image/jpeg "access plus 1 month"
+	ExpiresByType image/gif "access plus 1 month"
+	ExpiresByType image/png "access plus 1 month"
+	ExpiresByType image/webp "access plus 1 month"
+	ExpiresByType image/svg+xml "access plus 1 month"
+	
+	# CSS/JS - 1 mois
+	ExpiresByType text/css "access plus 1 month"
+	ExpiresByType application/javascript "access plus 1 month"
+	ExpiresByType text/javascript "access plus 1 month"
+	
+	# Fonts - 1 an
+	ExpiresByType font/truetype "access plus 1 year"
+	ExpiresByType font/opentype "access plus 1 year"
+	ExpiresByType application/x-font-woff "access plus 1 year"
+	ExpiresByType application/x-font-woff2 "access plus 1 year"
+	
+	# HTML - 5 minutes (revalidate frequently)
+	ExpiresByType text/html "access plus 5 minutes"
+</IfModule>
+
+# Cache-Control Headers
+<IfModule mod_headers.c>
+	# Images
+	<FilesMatch "\.(jpg|jpeg|png|gif|webp|svg)$">
+		Header set Cache-Control "max-age=2592000, public"
+		Header set X-Content-Type-Options "nosniff"
+	</FilesMatch>
+	
+	# CSS/JS
+	<FilesMatch "\.(css|js)$">
+		Header set Cache-Control "max-age=2592000, public"
+	</FilesMatch>
+	
+	# Fonts
+	<FilesMatch "\.(woff|woff2|ttf|otf|eot)$">
+		Header set Cache-Control "max-age=31536000, public, immutable"
+	</FilesMatch>
+	
+	# HTML
+	<FilesMatch "\.html?$">
+		Header set Cache-Control "max-age=300, public"
+	</FilesMatch>
+</IfModule>
+
+# Disable ETags (peut causer des problèmes avec le cache)
+<IfModule mod_headers.c>
+	Header unset ETag
+</IfModule>
+FileETag None
+
+# ============================================================
+# RÉÉCRITURE D'URL
+# ============================================================
+
 # Active le moteur de réécriture d'URL
 RewriteEngine On
 

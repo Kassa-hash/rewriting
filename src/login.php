@@ -4,8 +4,8 @@ include 'fonction.php';
 
 // Si déjà connecté, rediriger vers admin
 if (isset($_SESSION['user_id'])) {
-	header('Location: /admin/articles');
-	exit;
+    header('Location: /admin/articles');
+    exit;
 }
 
 $error = '';
@@ -13,191 +13,280 @@ $username = '';
 
 // Traiter le formulaire de login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$username = trim($_POST['username'] ?? '');
-	$password = $_POST['password'] ?? '';
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-	if (empty($username) || empty($password)) {
-		$error = 'Veuillez entrer un nom d\'utilisateur et un mot de passe.';
-	} else {
-		$user = validateLogin($username, $password);
-
-		if ($user !== null) {
-			// Connexion réussie
-			$_SESSION['user_id'] = $user['id'];
-			$_SESSION['username'] = $user['username'];
-			$_SESSION['role'] = $user['role'];
-
-			header('Location: /admin/articles');
-			exit;
-		} else {
-			$error = 'Nom d\'utilisateur ou mot de passe incorrect.';
-		}
-	}
+    if (empty($username) || empty($password)) {
+        $error = 'Veuillez entrer un nom d\'utilisateur et un mot de passe.';
+    } else {
+        $user = validateLogin($username, $password);
+        if ($user !== null) {
+            $_SESSION['user_id']  = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['role']     = $user['role'];
+            header('Location: /admin/articles');
+            exit;
+        } else {
+            $error = 'Nom d\'utilisateur ou mot de passe incorrect.';
+        }
+    }
 }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Connexion - Iran Observateur</title>
-	<style>
-		* {
-			margin: 0;
-			padding: 0;
-			box-sizing: border-box;
-		}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion — Iran Observateur</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* ── VARIABLES ─────────────────────────────── */
+        :root {
+            --ink:    #0f0e0c;
+            --paper:  #f5f0e8;
+            --cream:  #ede7d8;
+            --accent: #b8341b;
+            --muted:  #6b6355;
+            --border: #c8bfad;
+            --white:  #ffffff;
+        }
 
-		body {
-			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-			background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-			min-height: 100vh;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-		}
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-		.login-container {
-			background: white;
-			border-radius: 8px;
-			box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-			width: 100%;
-			max-width: 400px;
-			padding: 40px;
-		}
+        body {
+            background: var(--ink);
+            font-family: 'Source Serif 4', Georgia, serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            /* grain texture via repeating pattern */
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(184,52,27,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 20%, rgba(26,58,92,0.10) 0%, transparent 55%);
+        }
 
-		.login-header {
-			text-align: center;
-			margin-bottom: 30px;
-		}
+        /* ── BRAND ──────────────────────────────────── */
+        .login-brand {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .login-brand a {
+            text-decoration: none;
+        }
+        .login-brand h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(32px, 5vw, 52px);
+            font-weight: 900;
+            color: var(--paper);
+            line-height: 1;
+            letter-spacing: -0.01em;
+        }
+        .login-brand h1 span { color: var(--accent); }
+        .login-brand .brand-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: rgba(245,240,232,0.35);
+            margin-top: 8px;
+        }
 
-		.login-header h1 {
-			font-size: 28px;
-			font-weight: 700;
-			color: #1a1a2e;
-			margin-bottom: 5px;
-		}
+        /* ── CARD ───────────────────────────────────── */
+        .login-card {
+            background: var(--paper);
+            border-top: 4px solid var(--accent);
+            width: 100%;
+            max-width: 420px;
+            padding: 44px 40px 36px;
+        }
 
-		.login-header p {
-			color: #666;
-			font-size: 14px;
-		}
+        .login-card-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .login-card-header .card-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+        .login-card-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 26px;
+            font-weight: 700;
+            font-style: italic;
+            color: var(--ink);
+            line-height: 1.2;
+        }
 
-		.form-group {
-			margin-bottom: 20px;
-		}
+        /* ── ERROR ──────────────────────────────────── */
+        .error-message {
+            background: rgba(184,52,27,0.08);
+            border-left: 3px solid var(--accent);
+            color: var(--accent);
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            font-family: 'Source Serif 4', serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
 
-		.form-group label {
-			display: block;
-			margin-bottom: 8px;
-			font-weight: 600;
-			color: #333;
-			font-size: 14px;
-		}
+        /* ── FORM ───────────────────────────────────── */
+        .form-group { margin-bottom: 20px; }
 
-		.form-group input {
-			width: 100%;
-			padding: 12px 15px;
-			border: 2px solid #e0e0e0;
-			border-radius: 6px;
-			font-size: 14px;
-			transition: border-color 0.3s ease;
-		}
+        .form-group label {
+            display: block;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 7px;
+        }
 
-		.form-group input:focus {
-			outline: none;
-			border-color: #2c7a3f;
-			background-color: #fafafa;
-		}
+        .form-group input {
+            width: 100%;
+            border: 1px solid var(--border);
+            padding: 11px 14px;
+            font-family: 'Source Serif 4', serif;
+            font-size: 15px;
+            background: var(--white);
+            color: var(--ink);
+            outline: none;
+            transition: border-color 0.2s, background 0.2s;
+            appearance: none;
+            -webkit-appearance: none;
+            border-radius: 0;
+        }
+        .form-group input:focus {
+            border-color: var(--accent);
+            background: var(--white);
+        }
 
-		.error-message {
-			background-color: #fee;
-			color: #c33;
-			padding: 12px 15px;
-			border-radius: 6px;
-			margin-bottom: 20px;
-			font-size: 14px;
-			border-left: 4px solid #c33;
-		}
+        /* ── SUBMIT ─────────────────────────────────── */
+        .submit-btn {
+            width: 100%;
+            padding: 13px 20px;
+            background: var(--ink);
+            color: var(--paper);
+            border: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 8px;
+            border-radius: 0;
+        }
+        .submit-btn:hover { background: var(--accent); }
+        .submit-btn:active { opacity: 0.9; }
 
-		.submit-btn {
-			width: 100%;
-			padding: 12px 15px;
-			background-color: #2c7a3f;
-			color: white;
-			border: none;
-			border-radius: 6px;
-			font-size: 16px;
-			font-weight: 600;
-			cursor: pointer;
-			transition: background-color 0.3s ease;
-		}
+        /* ── FOOTER LINK ────────────────────────────── */
+        .login-back {
+            margin-top: 24px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .login-back a {
+            color: rgba(245,240,232,0.4);
+            text-decoration: none;
+            transition: color 0.18s;
+        }
+        .login-back a:hover { color: var(--accent); }
 
-		.submit-btn:hover {
-			background-color: #1f5728;
-		}
+        /* ── RULE ORNAMENT ──────────────────────────── */
+        .ornament {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 28px 0 0;
+        }
+        .ornament::before, .ornament::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+        .ornament span {
+            font-family: 'Playfair Display', serif;
+            font-size: 16px;
+            color: var(--border);
+        }
 
-		.submit-btn:active {
-			transform: scale(0.98);
-		}
-
-		.site-link {
-			text-align: center;
-			margin-top: 20px;
-		}
-
-		.site-link a {
-			color: #2c7a3f;
-			text-decoration: none;
-			font-size: 14px;
-			font-weight: 600;
-		}
-
-		.site-link a:hover {
-			text-decoration: underline;
-		}
-	</style>
+        @media (max-width: 480px) {
+            .login-card { padding: 32px 24px 28px; }
+        }
+    </style>
 </head>
 <body>
-	<div class="login-container">
-		<div class="login-header">
-			<h1>Iran Observateur</h1>
-			<p>Panel d'Administration</p>
-		</div>
 
-		<?php if ($error): ?>
-			<div class="error-message"><?= htmlspecialchars($error) ?></div>
-		<?php endif; ?>
+    <!-- Brand -->
+    <div class="login-brand">
+        <a href="/">
+            <h1>Iran <span>Observateur</span></h1>
+            <div class="brand-sub">Espace Administration</div>
+        </a>
+    </div>
 
-		<form method="POST" action="">
-			<div class="form-group">
-				<label for="username">Nom d'utilisateur</label>
-				<input 
-					type="text" 
-					id="username" 
-					name="username" 
-					value="<?= htmlspecialchars($username) ?>" 
-					required 
-					autofocus
-				>
-			</div>
+    <!-- Card -->
+    <div class="login-card">
 
-			<div class="form-group">
-				<label for="password">Mot de passe</label>
-				<input 
-					type="password" 
-					id="password" 
-					name="password" 
-					required
-				>
-			</div>
+        <div class="login-card-header">
+            <div class="card-label">Accès restreint</div>
+            <h2>Connexion</h2>
+        </div>
 
-			<button type="submit" class="submit-btn">Connexion</button>
-		</form>
+        <?php if ($error): ?>
+            <div class="error-message"><?= htmlspecialchars($error) ?></div>
+        <?php endif; ?>
 
-		<div class="site-link">
-			<a href="/">← Retour au site</a>
-		</div>
-	</div>
+        <form method="POST" action="">
+            <div class="form-group">
+                <label for="username">Nom d'utilisateur</label>
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    value="<?= htmlspecialchars($username) ?>"
+                    required
+                    autofocus
+                    autocomplete="username"
+                >
+            </div>
+            <div class="form-group">
+                <label for="password">Mot de passe</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+            <button type="submit" class="submit-btn">Se connecter →</button>
+        </form>
+
+        <div class="ornament"><span>❧</span></div>
+
+    </div>
+
+    <!-- Retour au site -->
+    <div class="login-back">
+        <a href="/">← Retour au site public</a>
+    </div>
+    <script src="/lazy-load.js"></script>
+
 </body>
 </html>
