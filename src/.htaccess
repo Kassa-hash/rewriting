@@ -16,7 +16,7 @@ RewriteCond %{REQUEST_FILENAME} !-d
 # /article/slug-de-l-article → article.php?slug=slug-de-l-article
 RewriteRule ^article/([a-z0-9\-]+)/?$ article.php?slug=$1 [QSA,L]
 
-# === CATEGORIE ===
+# === CATEGORIE (Frontend) ===
 # /categorie/slug-categorie → categorie.php?slug=slug-categorie
 # /categorie/slug-categorie/page/2 → categorie.php?slug=slug-categorie&page=2
 RewriteRule ^categorie/([a-z0-9\-]+)/?$ categorie.php?slug=$1 [QSA,L]
@@ -28,7 +28,7 @@ RewriteRule ^login/?$ login.php [QSA,L]
 # /logout → logout.php
 RewriteRule ^logout/?$ logout.php [QSA,L]
 
-# === ADMIN ===
+# === ADMIN - ARTICLES ===
 # /admin/articles/edit/ID → admin/articles/create.php?action=edit&id=ID
 RewriteRule ^admin/articles/edit/([0-9]+)/?$ admin/articles/create.php?action=edit&id=$1 [QSA,L]
 # /admin/articles/create → admin/articles/create.php
@@ -38,6 +38,16 @@ RewriteRule ^admin/articles/?$ admin/articles.php [QSA,L]
 # Media upload/delete
 RewriteRule ^admin/articles/media/upload/?$ admin/articles/media/upload.php [QSA,L]
 RewriteRule ^admin/articles/media/delete/?$ admin/articles/media/delete.php [QSA,L]
+
+# === ADMIN - CATEGORIES ===
+# /admin/categories/edit/ID → admin/categories/create.php?action=edit&id=ID
+RewriteRule ^admin/categories/edit/([0-9]+)/?$ admin/categories/create.php?action=edit&id=$1 [QSA,L]
+# /admin/categories/create → admin/categories/create.php
+RewriteRule ^admin/categories/create/?$ admin/categories/create.php [QSA,L]
+# /admin/categories → admin/categories.php
+RewriteRule ^admin/categories/?$ admin/categories.php [QSA,L]
+
+# === ADMIN (default) ===
 # /admin → admin/articles.php (redirect to articles)
 RewriteRule ^admin/?$ admin/articles.php [QSA,L]
 
