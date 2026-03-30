@@ -662,6 +662,7 @@
       bar.style.width = Math.min(pct, 100) + '%';
     });
   </script>
+  <script src="/lazy-load.js"></script>
 
 </body>
 </html>

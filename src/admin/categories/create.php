@@ -160,6 +160,7 @@ include '../header.php';
 </div>
 
 </div> <!-- /admin-container -->
+<script src="/lazy-load.js"></script>
 
 </body>
 </html>
