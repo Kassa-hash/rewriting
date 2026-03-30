@@ -837,5 +837,62 @@ function deleteMedia(int $mediaId): bool
 	return executeQuery($sql, [':id' => $mediaId]);
 }
 
+// ============================================================
+// CATEGORY MANAGEMENT FUNCTIONS (CRUD)
+// ============================================================
+
+function countArticlesByCategory(int $categoryId): int
+{
+	$sql = "SELECT COUNT(*)::INT AS total FROM articles WHERE category_id = :category_id";
+	$row = fetchOneRow($sql, [':category_id' => $categoryId]);
+	return (int) ($row['total'] ?? 0);
+}
+
+function createCategory(string $name, string $slug, ?string $description = null, ?int $parentId = null): ?array
+{
+	$sql = "
+		INSERT INTO categories (name, slug, description, parent_id)
+		VALUES (:name, :slug, :description, :parent_id)
+		RETURNING id, name, slug, description, parent_id
+	";
+
+	$stmt = pdoConnection()->prepare($sql);
+	$stmt->execute([
+		':name' => $name,
+		':slug' => $slug,
+		':description' => $description,
+		':parent_id' => $parentId
+	]);
+
+	return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
+}
+
+function updateCategory(int $categoryId, string $name, string $slug, ?string $description = null, ?int $parentId = null): bool
+{
+	$sql = "
+		UPDATE categories
+		SET name = :name,
+			slug = :slug,
+			description = :description,
+			parent_id = :parent_id
+		WHERE id = :id
+	";
+
+	$stmt = pdoConnection()->prepare($sql);
+	return $stmt->execute([
+		':id' => $categoryId,
+		':name' => $name,
+		':slug' => $slug,
+		':description' => $description,
+		':parent_id' => $parentId
+	]);
+}
+
+function deleteCategory(int $categoryId): bool
+{
+	$sql = "DELETE FROM categories WHERE id = :id";
+	return executeQuery($sql, [':id' => $categoryId]);
+}
+
 
 ?>

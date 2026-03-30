@@ -420,7 +420,7 @@ if (!isset($_SESSION['user_id'])) {
 			<a href="/admin/articles" class="nav-brand">Iran Observateur</a>
 			<ul class="nav-menu">
 				<li><a href="/admin/articles" class="<?= strpos($_SERVER['REQUEST_URI'], '/admin/articles') === 0 ? 'active' : '' ?>">Articles</a></li>
-				<li><a href="/admin/categor" class="<?= strpos($_SERVER['REQUEST_URI'], '/admin/categories') === 0 ? 'active' : '' ?>">Catégories</a></li>
+				<li><a href="/admin/categories" class="<?= strpos($_SERVER['REQUEST_URI'], '/admin/categories') === 0 ? 'active' : '' ?>">Catégories</a></li>
 			</ul>
 			<div class="nav-right">
 				<div class="nav-user">
