@@ -437,7 +437,7 @@ $allCategories = getAllCategories(false);
                     <a href="/article/<?= urlencode($art['slug']) ?>" class="article-row">
                         <div class="row-thumb">
                             <?php if ($art['media_filename']) { ?>
-                                <img src="uploads/<?= htmlspecialchars($art['media_filename']) ?>" alt="<?= htmlspecialchars($art['media_alt_text'] ?? $art['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                                <img src="/uploads/<?= htmlspecialchars($art['media_filename']) ?>" alt="<?= htmlspecialchars($art['media_alt_text'] ?? $art['title']) ?>" style="width: 100%; height: 100%; object-fit: cover;">
                             <?php } else { ?>
                                 <?= strtoupper(substr($art['category_slug'] ?? 'cat', 0, 3)) ?>
                             <?php } ?>

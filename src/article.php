@@ -568,7 +568,7 @@
         <div class="gallery-grid">
           <?php foreach ($articleImages as $image) { ?>
           <figure class="gallery-item">
-            <img src="uploads/<?= htmlspecialchars($image['filename']) ?>" alt="<?= htmlspecialchars($image['alt_text']) ?>" loading="lazy">
+            <img src="/uploads/<?= htmlspecialchars($image['filename']) ?>" alt="<?= htmlspecialchars($image['alt_text']) ?>" loading="lazy">
           </figure>
           <?php } ?>
         </div>
