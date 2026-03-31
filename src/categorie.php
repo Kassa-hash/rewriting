@@ -1,31 +1,35 @@
 <?php
-include 'fonction.php';
-
-// Récupérer la catégorie par slug ou ID
-$slug = $_GET['slug'] ?? null;
-$id = $_GET['id'] ?? null;
-
-$category = null;
-if ($slug) {
-    $category = getCategoryBySlug($slug);
-} elseif ($id) {
-    $category = getCategoryById((int)$id);
-}
-
-if (!$category) {
-    header('Location: index.php');
-    exit;
-}
-
-$page = max(1, (int)($_GET['page'] ?? 1));
-$perPage = 10;
-$offset = ($page - 1) * $perPage;
-
-$articles = getArticlesByCategorySlug($category['slug'], $perPage, $offset);
-$total = countPublishedArticlesByCategorySlug($category['slug']);
-$pages = ceil($total / $perPage);
-
-$allCategories = getAllCategories(false);
+    include 'fonction.php';
+    
+    // Récupérer la catégorie par slug ou ID
+    $slug = $_GET['slug'] ?? null;
+    $id = $_GET['id'] ?? null;
+    
+    $category = null;
+    if ($slug) {
+        $category = getCategoryBySlug($slug);
+    } elseif ($id) {
+        $category = getCategoryById((int)$id);
+    }
+    
+    // Redirection si catégorie non trouvée
+    if (!$category) {
+        header('Location: index.php');
+        exit;
+    }
+    
+    // Pagination
+    $page = max(1, (int)($_GET['page'] ?? 1));
+    $perPage = 10;
+    $offset = ($page - 1) * $perPage;
+    
+    // Récupérer articles et total
+    $articles = getArticlesByCategorySlug($category['slug'], $perPage, $offset);
+    $total = countPublishedArticlesByCategorySlug($category['slug']);
+    $pages = ceil($total / $perPage);
+    
+    // Récupérer catégories pour nav
+    $allCategories = getAllCategories(false);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -409,11 +413,11 @@ $allCategories = getAllCategories(false);
         </nav>
     </header>
 
-    <nav class="breadcrumb" aria-label="Fil d'Ariane">
-        <a href="index.php">Accueil</a>
-        <span>/</span>
-        <span><?= htmlspecialchars($category['name']) ?></span>
-    </nav>
+  <nav class="breadcrumb" aria-label="Fil d'Ariane">
+    <a href="index.php">Accueil</a>
+    <span>/</span>
+    <span><?= htmlspecialchars($category['name']) ?></span>
+  </nav>
 
     <section class="cat-hero">
         <h2><?= htmlspecialchars($category['name']) ?></h2>

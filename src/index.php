@@ -622,7 +622,7 @@
       </div>
     </div>
     <nav aria-label="Navigation principale">
-      <a href="index.php" class="active">Accueil</a>
+        <a href="/" class="active">Accueil</a>
       <?php foreach ($categories as $cat) { ?>
         <a href="/categorie/<?= urlencode($cat['slug']) ?>"><?= htmlspecialchars($cat['name']) ?></a>
       <?php } ?>
