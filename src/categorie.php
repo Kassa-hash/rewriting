@@ -13,7 +13,7 @@ if ($slug) {
 }
 
 if (!$category) {
-    header('Location: index.php');
+    header('Location: /');
     exit;
 }
 
@@ -410,7 +410,7 @@ $allCategories = getAllCategories(false);
     </header>
 
     <nav class="breadcrumb" aria-label="Fil d'Ariane">
-        <a href="index.php">Accueil</a>
+        <a href="/">Accueil</a>
         <span>/</span>
         <span><?= htmlspecialchars($category['name']) ?></span>
     </nav>

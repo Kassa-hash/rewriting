@@ -4,7 +4,7 @@
     // Récupérer l'article par slug depuis l'URL
     $slug = $_GET['slug'] ?? null;
     if (!$slug) {
-        header('Location: index.php');
+        header('Location: /');
         exit;
     }
     

@@ -3,7 +3,7 @@
     
     $slug = $_GET['slug'] ?? null;
     if (!$slug) {
-        header('Location: index.php');
+        header('Location: /');
         exit;
     }
     
@@ -497,7 +497,7 @@
   <div class="reading-progress" id="progress" role="progressbar" aria-label="Progression de lecture"></div>
 
   <div class="topbar">
-    <a href="index.php">← Iran Observateur</a>
+    <a href="/">← Iran Observateur</a>
     &nbsp;·&nbsp; <?= $article['published_at'] ? date('l d F Y', strtotime($article['published_at'])) : date('l d F Y') ?> &nbsp;·&nbsp; <?= htmlspecialchars($article['category_name'] ?? 'Article') ?>
   </div>
 
@@ -507,12 +507,12 @@
         <div>Vol. XII — N°88</div>
       </div>
       <div class="site-title">
-        <a href="index.php"><h1>Iran <span>Observateur</span></h1></a>
+        <a href="/"><h1>Iran <span>Observateur</span></h1></a>
       </div>
       <div style="width: 100px;"></div>
     </div>
     <nav aria-label="Navigation principale">
-      <a href="index.php">Accueil</a>
+      <a href="/">Accueil</a>
       <?php foreach ($categories as $cat) { ?>
         <a href="categorie.php?slug=<?= urlencode($cat['slug']) ?>"><?= htmlspecialchars($cat['name']) ?></a>
       <?php } ?>
@@ -521,7 +521,7 @@
   </header>
 
   <nav class="breadcrumb" aria-label="Fil d'Ariane">
-    <a href="index.php">Accueil</a>
+    <a href="/">Accueil</a>
     <span>/</span>
     <?php if ($article['category_id']) { ?>
       <a href="categorie.php?slug=<?= urlencode($article['category_slug']) ?>"><?= htmlspecialchars($article['category_name']) ?></a>
@@ -629,7 +629,7 @@
     <div class="footer-inner">
       <div class="brand">Iran <span>Observateur</span></div>
       <nav aria-label="Navigation pied de page">
-        <a href="index.php">Accueil</a>
+        <a href="/">Accueil</a>
         <a href="categorie.php?slug=diplomatie">Articles</a>
         <a href="a-propos.php">À propos</a>
       </nav>
